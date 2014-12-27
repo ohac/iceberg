@@ -71,18 +71,22 @@ post '/upload' do
   origname = NKF.nkf("-w", origname) # TODO i18n
   origname = origname.tr(" ", "_")
   name = File.basename(origname)
-  dest = File.join(download, name)
+  redirect '/upload' if File.new(path).size > 2 * 1024 * 1024
+  alldata = File.open(path, 'rb'){|fd| fd.read}
+  digest = Digest::SHA1.hexdigest(alldata)
+  dest = File.join(download, digest)
   redirect '/upload' if File.exist?(dest) # TODO error
   FileUtils.mv(path, dest)
   FileUtils.chmod(0644, dest)
-  n = @@redis.lpush(IBDB_RECENT, name)
+  n = @@redis.lpush(IBDB_RECENT, digest)
   if n.size > 3 # TODO
-    redis.rpop(IBDB_RECENT)
+    @@redis.rpop(IBDB_RECENT)
   end
   redirect '/'
 end
 
 get '/download/:name' do
+  content_type 'application/octet-stream'
   name = params[:name]
   download = SETTING['local']['download']
   file = File.join(download, name)
