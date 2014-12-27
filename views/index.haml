@@ -1,12 +1,13 @@
 %html
   %head
-    %title iceberg
+    %title Online Storage - Iceberg
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
     %script{:type => 'text/javascript', :src => 'jquery-2.1.3.min.js'}
     %script{:type => 'text/javascript', :src => 'index.js'}
   %body
-    %h1 Upload file (max 10 MiB)
+    %h1 Online Storage - Iceberg
+    %h2 Upload file (max 10 MiB)
     %form{:action => '/upload', :method => 'post',
         :enctype => 'multipart/form-data'}
       %label{:for => 'file1'} STEP 1: Choose File
@@ -16,7 +17,7 @@
       %label STEP 2
       %br
       %input{:type => 'submit', :value => 'Upload'}
-    %h1 Download file (max 100 files)
+    %h2 Download file (max 100 files)
     - if uploaded
       - name = uploaded[:name]
       - digest = uploaded[:digest]
@@ -27,7 +28,7 @@
     - recentfiles.each do |file|
       %a.files{:href => "/download/#{file}", :id => file}= file
       %br
-    %h1 Meta data in your browser
+    %h2 Meta data in your browser
     %textarea#metadata{:rows => 20, :cols => 120}
   %span#forkongithub
     %a{:href => 'https://github.com/ohac/iceberg'} Fork me on GitHub
