@@ -12,12 +12,9 @@
       - name = uploaded[:name]
       - digest = uploaded[:digest]
       - encdigest = uploaded[:encdigest]
+      %input#name{:type => :hidden, :value => name}
+      %input#digest{:type => :hidden, :value => digest}
+      %input#encdigest{:type => :hidden, :value => encdigest}
     - recentfiles.each do |file|
-      - params = ''
-      - filename = file
-      - if uploaded
-        - if file == encdigest
-          - filename = name
-          - params = "?digest=#{digest}&filename=#{filename}"
-      %a{:href => "/download/#{file}#{params}"}= filename
+      %a.files{:href => "/download/#{file}", :id => file}= file
       %br
