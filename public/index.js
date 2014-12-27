@@ -23,7 +23,14 @@ $(function(){
   for (var i = 0; i < localStorage.length; i++) {
     var k = localStorage.key(i);
     metadata = metadata + sepa + k + '=' + localStorage.getItem(k);
-    sepa = ',\n';
+    sepa = '\n';
   }
-  $('#metadata').html(metadata);
+  $('#metadata').val(metadata);
+  $('#metadata').change(function () {
+    var metadata = $(this).val();
+    $(metadata.split('\n')).each(function (i, x) {
+      var kv = x.split('=');
+      localStorage.setItem(kv[0], kv[1]);
+    });
+  });
 });
