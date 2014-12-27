@@ -30,7 +30,14 @@ $(function(){
     var metadata = $(this).val();
     $(metadata.split('\n')).each(function (i, x) {
       var kv = x.split('=');
-      localStorage.setItem(kv[0], kv[1]);
+      var k = kv[0];
+      var v = kv[1];
+      if (v.length == 0) {
+        localStorage.removeItem(k);
+      }
+      else {
+        localStorage.setItem(k, v);
+      }
     });
   });
 });
