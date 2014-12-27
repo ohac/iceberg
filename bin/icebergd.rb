@@ -86,5 +86,14 @@ get '/download/:name' do
   name = params[:name]
   download = SETTING['local']['download']
   file = File.join(download, name)
-  File.open(file, 'rb'){|fd| fd.read}[0, 256] # TODO test
+  stream do |out|
+    File.open(file, 'rb') do |fd|
+      loop do
+        data = fd.read(32 * 1024)
+        break unless data
+        out << data
+        sleep 0.1
+      end
+    end
+  end
 end
