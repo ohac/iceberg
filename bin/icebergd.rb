@@ -75,7 +75,7 @@ post '/upload' do
   origname = NKF.nkf("-w", origname) # TODO i18n
   origname = origname.tr(" ", "_")
   name = File.basename(origname)
-  redirect '/upload' if File.new(path).size > 2 * 1024 * 1024
+  redirect '/upload' if File.new(path).size > 10 * 1024 * 1024 # TODO
   alldata = File.open(path, 'rb'){|fd| fd.read}
   digest = Digest::SHA1.hexdigest(alldata)
 
@@ -84,11 +84,13 @@ post '/upload' do
   encdata = cipher.update(alldata) + cipher.final
   encdigest = Digest::SHA1.hexdigest(encdata)
   dest = File.join(download, encdigest)
-  redirect '/upload' if File.exist?(dest) # TODO error
-  File.open(dest, 'wb'){|fd| fd.write(encdata)}
-  n = @@redis.lpush(IBDB_RECENT, encdigest)
-  if n.size > 3 # TODO
-    @@redis.rpop(IBDB_RECENT)
+  unless File.exist?(dest)
+    File.open(dest, 'wb'){|fd| fd.write(encdata)}
+    n = @@redis.lpush(IBDB_RECENT, encdigest)
+    if n.size > 100 # TODO
+      dropdigest = @@redis.rpop(IBDB_RECENT)
+      FileUtils.rm_f(File.join(download, dropdigest))
+    end
   end
   session[:uploaded] = {
     :name => name,
