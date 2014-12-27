@@ -55,7 +55,10 @@ end
 
 get '/' do
   recentfiles = @@redis.lrange(IBDB_RECENT, 0, 3) # TODO
-  haml :index, :locals => { :recentfiles => recentfiles }
+  uploaded = session[:uploaded]
+  session[:uploaded] = nil
+  haml :index, :locals => { :recentfiles => recentfiles,
+      :uploaded => uploaded }
 end
 
 get '/upload' do
@@ -78,10 +81,8 @@ post '/upload' do
 
   cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).encrypt
   cipher.key = digest
-p digest
   encdata = cipher.update(alldata) + cipher.final
   encdigest = Digest::SHA1.hexdigest(encdata)
-
   dest = File.join(download, encdigest)
   redirect '/upload' if File.exist?(dest) # TODO error
   File.open(dest, 'wb'){|fd| fd.write(encdata)}
@@ -89,12 +90,22 @@ p digest
   if n.size > 3 # TODO
     @@redis.rpop(IBDB_RECENT)
   end
+  session[:uploaded] = {
+    :name => name,
+    :digest => digest,
+    :encdigest => encdigest,
+  }
   redirect '/'
 end
 
 get '/download/:name' do
   content_type 'application/octet-stream'
   name = params[:name]
+  filename = params[:filename]
+  if filename
+    response.headers['Content-Disposition'] =
+        "attachment; filename=\"#{filename}\""
+  end
   download = SETTING['local']['download']
   digest = params[:digest]
   if digest

@@ -8,6 +8,16 @@
   %body
     %a{:href => '/upload'} Upload
     %br
+    - if uploaded
+      - name = uploaded[:name]
+      - digest = uploaded[:digest]
+      - encdigest = uploaded[:encdigest]
     - recentfiles.each do |file|
-      %a{:href => "/download/#{file}"}= file
+      - params = ''
+      - filename = file
+      - if uploaded
+        - if file == encdigest
+          - filename = name
+          - params = "?digest=#{digest}&filename=#{filename}"
+      %a{:href => "/download/#{file}#{params}"}= filename
       %br
