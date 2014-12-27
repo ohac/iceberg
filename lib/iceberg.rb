@@ -3,6 +3,7 @@ require 'rubygems'
 require 'fileutils'
 require 'redis'
 require 'yaml'
+require 'openssl'
 
 HOME_DIR = ENV['HOME']
 SETTING_DIR = File.join(HOME_DIR, '.iceberg')

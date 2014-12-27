@@ -51,6 +51,7 @@ before do
 end
 
 @@redis = Redis.new
+@@algorithm = 'AES-256-CBC'
 
 get '/' do
   recentfiles = @@redis.lrange(IBDB_RECENT, 0, 3) # TODO
@@ -74,11 +75,17 @@ post '/upload' do
   redirect '/upload' if File.new(path).size > 2 * 1024 * 1024
   alldata = File.open(path, 'rb'){|fd| fd.read}
   digest = Digest::SHA1.hexdigest(alldata)
-  dest = File.join(download, digest)
+
+  cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).encrypt
+  cipher.key = digest
+p digest
+  encdata = cipher.update(alldata) + cipher.final
+  encdigest = Digest::SHA1.hexdigest(encdata)
+
+  dest = File.join(download, encdigest)
   redirect '/upload' if File.exist?(dest) # TODO error
-  FileUtils.mv(path, dest)
-  FileUtils.chmod(0644, dest)
-  n = @@redis.lpush(IBDB_RECENT, digest)
+  File.open(dest, 'wb'){|fd| fd.write(encdata)}
+  n = @@redis.lpush(IBDB_RECENT, encdigest)
   if n.size > 3 # TODO
     @@redis.rpop(IBDB_RECENT)
   end
@@ -89,15 +96,23 @@ get '/download/:name' do
   content_type 'application/octet-stream'
   name = params[:name]
   download = SETTING['local']['download']
+  digest = params[:digest]
+  if digest
+    cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).decrypt
+    cipher.key = digest
+  end
+
   file = File.join(download, name)
   stream do |out|
     File.open(file, 'rb') do |fd|
       loop do
         data = fd.read(32 * 1024)
         break unless data
+        data = cipher.update(data) if cipher
         out << data
         sleep 0.1
       end
+      out << cipher.final if cipher
     end
   end
 end
