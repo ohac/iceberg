@@ -8,6 +8,8 @@
   %body
     %a{:href => '/upload'} Upload
     %br
+    %textarea#metadata{:rows => 20, :cols => 120}
+    %br
     - if uploaded
       - name = uploaded[:name]
       - digest = uploaded[:digest]

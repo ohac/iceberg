@@ -18,4 +18,12 @@ $(function(){
       y.html(name);
     }
   });
+  var metadata = ''
+  var sepa = ''
+  for (var i = 0; i < localStorage.length; i++) {
+    var k = localStorage.key(i);
+    metadata = metadata + sepa + k + '=' + localStorage.getItem(k);
+    sepa = ',\n';
+  }
+  $('#metadata').html(metadata);
 });
