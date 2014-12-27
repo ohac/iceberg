@@ -1,6 +1,7 @@
 # coding: utf-8
 require 'rubygems'
 require 'fileutils'
+require 'redis'
 require 'yaml'
 
 HOME_DIR = ENV['HOME']
@@ -21,3 +22,5 @@ unless File.exist?(SETTING_FILE)
 end
 
 SETTING = YAML.load(File.read(SETTING_FILE))
+
+IBDB_RECENT = 'iceberg:recent'

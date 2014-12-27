@@ -50,8 +50,11 @@ before do
   response.headers['Cache-Control'] = 'no-cache'
 end
 
+@@redis = Redis.new
+
 get '/' do
-  haml :index, :locals => { :foo => nil }
+  recentfiles = @@redis.lrange(IBDB_RECENT, 0, 3) # TODO
+  haml :index, :locals => { :recentfiles => recentfiles }
 end
 
 get '/upload' do
@@ -72,5 +75,16 @@ post '/upload' do
   redirect '/upload' if File.exist?(dest) # TODO error
   FileUtils.mv(path, dest)
   FileUtils.chmod(0644, dest)
+  n = @@redis.lpush(IBDB_RECENT, name)
+  if n.size > 3 # TODO
+    redis.rpop(IBDB_RECENT)
+  end
   redirect '/'
+end
+
+get '/download/:name' do
+  name = params[:name]
+  download = SETTING['local']['download']
+  file = File.join(download, name)
+  File.open(file, 'rb'){|fd| fd.read}[0, 256] # TODO test
 end

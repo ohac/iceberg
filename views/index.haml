@@ -6,3 +6,7 @@
     %script{:type => 'text/javascript', :src => 'index.js'}
   %body
     %a{:href => '/upload'} Upload
+    %br
+    - recentfiles.each do |file|
+      %a{:href => "/download/#{file}"}= file
+      %br
