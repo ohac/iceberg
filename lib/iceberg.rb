@@ -26,5 +26,5 @@ SETTING = YAML.load(File.read(SETTING_FILE))
 
 IBDB_RECENT = 'iceberg:recent'
 IBDB_TRIPCODE = 'iceberg:tripcode:'
-IBDB_TRIPCODE_LIST = 'iceberg:tripcode:list'
+IBDB_TRIPCODE_SET = 'iceberg:tripcode:set'
 IBDB_TRIPCODE_FUND = 'iceberg:tripcode:fund:'

@@ -56,15 +56,11 @@ end
 
 get '/' do
   recentfiles = @@redis.lrange(IBDB_RECENT, 0, 100) # TODO
-  tripcodelist = @@redis.lrange(IBDB_TRIPCODE_LIST, 0, 100)
+  tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET)
   uploaded = session[:uploaded]
   session[:uploaded] = nil
   haml :index, :locals => { :recentfiles => recentfiles,
       :uploaded => uploaded, :tripcodelist => tripcodelist }
-end
-
-get '/upload' do
-  haml :upload, :locals => { :foo => nil }
 end
 
 post '/upload' do
@@ -72,13 +68,14 @@ post '/upload' do
   FileUtils.mkdir download unless File.exist?(download)
   f = params[:file]
   tripkey = params[:tripkey]
-  redirect '/upload' if f.nil? # TODO error
+  tripkey = nil if tripkey.empty?
+  redirect '/' if f.nil? # TODO error
   path = f[:tempfile].path
   origname = f[:filename]
   origname = NKF.nkf("-w", origname) # TODO i18n
   origname = origname.tr(" ", "_")
   name = File.basename(origname)
-  redirect '/upload' if File.new(path).size > 10 * 1024 * 1024 # TODO
+  redirect '/' if File.new(path).size > 10 * 1024 * 1024 # TODO
   alldata = File.open(path, 'rb'){|fd| fd.read}
   digest = Digest::SHA1.hexdigest(alldata)
 
@@ -90,22 +87,44 @@ post '/upload' do
   unless File.exist?(dest)
     File.open(dest, 'wb'){|fd| fd.write(encdata)}
     n = @@redis.lpush(IBDB_RECENT, encdigest)
-    if n.size > 100 # TODO
+    tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET) || []
+    while n.size > 100 do # TODO
+      n = @@redis.llen(IBDB_RECENT)
       dropdigest = @@redis.rpop(IBDB_RECENT)
-      FileUtils.rm_f(File.join(download, dropdigest))
+      found = false
+      tripcodelist.each do |tripcode|
+        next unless @@redis.sismember(IBDB_TRIPCODE + tripcode, dropdigest)
+        v = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
+        if v.to_i > 0
+          @@redis.decrby(IBDB_TRIPCODE_FUND + tripcode, 1)
+          found = true
+          break
+        end
+      end
+      unless found
+        FileUtils.rm_f(File.join(download, dropdigest))
+        break
+      end
+      @@redis.lpush(IBDB_RECENT, dropdigest)
     end
   end
   if tripkey
     tripcode = Base64.encode64(Digest::SHA1.digest(tripkey))[0, 12]
-    n = @@redis.lpush(IBDB_TRIPCODE_LIST, tripcode)
-    @@redis.rpop(IBDB_TRIPCODE_LIST) if n.size > 100
-    @@redis.lpush(IBDB_TRIPCODE + tripcode, encdigest)
-    @@redis.set(IBDB_TRIPCODE_FUND + tripcode, 10.01) # TODO
+    @@redis.sadd(IBDB_TRIPCODE_SET, tripcode)
+    @@redis.sadd(IBDB_TRIPCODE + tripcode, encdigest)
+    # TODO test (initial bonus)
+    v = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
+    if v
+      @@redis.incrby(IBDB_TRIPCODE_FUND + tripcode, 1)
+    else
+      @@redis.set(IBDB_TRIPCODE_FUND + tripcode, 2)
+    end
   end
   session[:uploaded] = {
     :name => name,
     :digest => digest,
     :encdigest => encdigest,
+    :tripcode => tripcode,
   }
   redirect '/'
 end
@@ -115,6 +134,8 @@ get '/download/:name' do
   filename = params[:filename]
   ctype, disp = case filename
     when /\.jpg$/ ; ['image/jpeg', 'inline']
+    when /\.png$/ ; ['image/png', 'inline']
+    when /\.gif$/ ; ['image/gif', 'inline']
     when /\.mp3$/ ; ['audio/mpeg', 'inline']
     else ['application/octet-stream', 'attachment']
   end
@@ -147,7 +168,7 @@ end
 
 get '/tripcode/:tripcode' do
   tripcode = params[:tripcode]
-  files = @@redis.lrange(IBDB_TRIPCODE + tripcode, 0, 100)
+  files = @@redis.smembers(IBDB_TRIPCODE + tripcode)
   fund = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
   haml :tripcode, :locals => { :tripcode => tripcode, :files => files,
       :fund => fund }

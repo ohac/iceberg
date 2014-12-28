@@ -7,7 +7,19 @@
     %script{:type => 'text/javascript', :src => 'index.js'}
   %body
     %h1 Online Storage - Iceberg
-    %h2 Upload file (max 10 MiB)
+    - if uploaded
+      Uploaded
+      - name = uploaded[:name]
+      - digest = uploaded[:digest]
+      - encdigest = uploaded[:encdigest]
+      - tripcode = uploaded[:tripcode]
+      %input#name{:type => :hidden, :value => name}
+      %input#digest{:type => :hidden, :value => digest}
+      %input#encdigest{:type => :hidden, :value => encdigest}
+      - if tripcode
+        %br
+        Tripcode: #{tripcode}
+    %h2 Upload (max 10 MiB)
     %form{:action => '/upload', :method => 'post',
         :enctype => 'multipart/form-data'}
       %label{:for => 'file1'} STEP 1: Choose File
@@ -22,19 +34,12 @@
       %label Tripcode tag (Option)
       %br
       %input.bigbutton{:type => 'input', :name => 'tripkey'}
-    %h2 Download file (max 100 files)
-    - if uploaded
-      - name = uploaded[:name]
-      - digest = uploaded[:digest]
-      - encdigest = uploaded[:encdigest]
-      %input#name{:type => :hidden, :value => name}
-      %input#digest{:type => :hidden, :value => digest}
-      %input#encdigest{:type => :hidden, :value => encdigest}
+    %h2 Download (max 100 files)
     - recentfiles.each do |file|
       - filename = "encrypted-#{file[0, 8]}"
       %a.files{:href => "/download/#{file}", :id => file}= filename
       %br
-    %h2 Tripcode tag (max 100 tags)
+    %h2 Tripcode tags
     - tripcodelist.each do |tripcode|
       %a.files{:href => "/tripcode/#{tripcode}"}= tripcode
       %br
