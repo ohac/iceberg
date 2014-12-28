@@ -54,7 +54,7 @@ end
 @@algorithm = 'AES-256-CBC'
 
 get '/' do
-  recentfiles = @@redis.lrange(IBDB_RECENT, 0, 3) # TODO
+  recentfiles = @@redis.lrange(IBDB_RECENT, 0, 100) # TODO
   uploaded = session[:uploaded]
   session[:uploaded] = nil
   haml :index, :locals => { :recentfiles => recentfiles,
