@@ -101,12 +101,17 @@ post '/upload' do
 end
 
 get '/download/:name' do
-  content_type 'application/octet-stream'
   name = params[:name]
   filename = params[:filename]
+  ctype, disp = case filename
+    when /\.jpg$/ ; ['image/jpeg', 'inline']
+    when /\.mp3$/ ; ['audio/mpeg', 'inline']
+    else ['application/octet-stream', 'attachment']
+  end
+  content_type ctype
   if filename
     response.headers['Content-Disposition'] =
-        "attachment; filename=\"#{filename}\""
+        "#{disp}; filename=\"#{filename}\""
   end
   download = SETTING['local']['download']
   digest = params[:digest]
