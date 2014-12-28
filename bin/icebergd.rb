@@ -55,7 +55,7 @@ end
 @@algorithm = 'AES-256-CBC'
 
 get '/' do
-  recentfiles = @@redis.lrange(IBDB_RECENT, 0, 100) # TODO
+  recentfiles = @@redis.lrange(IBDB_RECENT, 0, 200) # TODO
   tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET)
   uploaded = session[:uploaded]
   session[:uploaded] = nil
@@ -75,7 +75,7 @@ post '/upload' do
   origname = NKF.nkf("-w", origname) # TODO i18n
   origname = origname.tr(" ", "_")
   name = File.basename(origname)
-  redirect '/' if File.new(path).size > 10 * 1024 * 1024 # TODO
+  redirect '/' if File.new(path).size > 20 * 1024 * 1024 # TODO
   alldata = File.open(path, 'rb'){|fd| fd.read}
   digest = Digest::SHA1.hexdigest(alldata)
 
@@ -88,21 +88,24 @@ post '/upload' do
     File.open(dest, 'wb'){|fd| fd.write(encdata)}
     n = @@redis.lpush(IBDB_RECENT, encdigest)
     tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET) || []
-    while n.size > 100 do # TODO
+    while n.size > 200 do # TODO
       n = @@redis.llen(IBDB_RECENT)
       dropdigest = @@redis.rpop(IBDB_RECENT)
+      dropfile = File.join(download, dropdigest)
+      dropsize = File.size(dropfile) / (1024 * 1024) # MiB
+      dropsize = 1 if dropsize <= 0
       found = false
       tripcodelist.each do |tripcode|
         next unless @@redis.sismember(IBDB_TRIPCODE + tripcode, dropdigest)
         v = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
         if v.to_i > 0
-          @@redis.decrby(IBDB_TRIPCODE_FUND + tripcode, 1)
+          @@redis.decrby(IBDB_TRIPCODE_FUND + tripcode, dropsize)
           found = true
           break
         end
       end
       unless found
-        FileUtils.rm_f(File.join(download, dropdigest))
+        FileUtils.rm_f(dropfile)
         break
       end
       @@redis.lpush(IBDB_RECENT, dropdigest)

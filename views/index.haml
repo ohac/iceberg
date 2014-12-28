@@ -18,8 +18,9 @@
       %input#encdigest{:type => :hidden, :value => encdigest}
       - if tripcode
         %br
-        Tripcode: #{tripcode}
-    %h2 Upload (max 10 MiB)
+        Tripcode: 
+        %a{:href => "/tripcode/#{tripcode}"}= tripcode
+    %h2 Upload (max 20 MiB)
     %form{:action => '/upload', :method => 'post',
         :enctype => 'multipart/form-data'}
       %label{:for => 'file1'} STEP 1: Choose File
@@ -33,15 +34,16 @@
       %br
       %label Tripcode tag (Option)
       %br
+      \#
       %input.bigbutton{:type => 'input', :name => 'tripkey'}
-    %h2 Download (max 100 files)
+    %h2 Download (max 200 files)
     - recentfiles.each do |file|
       - filename = "encrypted-#{file[0, 8]}"
       %a.files{:href => "/download/#{file}", :id => file}= filename
       %br
     %h2 Tripcode tags
     - tripcodelist.each do |tripcode|
-      %a.files{:href => "/tripcode/#{tripcode}"}= tripcode
+      %a{:href => "/tripcode/#{tripcode}"}= tripcode
       %br
     %h2 Meta data in your browser
     Backup below text data to other storage.
