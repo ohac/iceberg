@@ -14,6 +14,7 @@ require 'haml'
 require 'sinatra'
 require 'nkf'
 require 'fileutils'
+require 'base64'
 
 ICEBERG_HOME = File.dirname(__FILE__) + '/../'
 set :public_folder, ICEBERG_HOME + 'public'
@@ -55,10 +56,11 @@ end
 
 get '/' do
   recentfiles = @@redis.lrange(IBDB_RECENT, 0, 100) # TODO
+  tripcodelist = @@redis.lrange(IBDB_TRIPCODE_LIST, 0, 100)
   uploaded = session[:uploaded]
   session[:uploaded] = nil
   haml :index, :locals => { :recentfiles => recentfiles,
-      :uploaded => uploaded }
+      :uploaded => uploaded, :tripcodelist => tripcodelist }
 end
 
 get '/upload' do
@@ -69,6 +71,7 @@ post '/upload' do
   download = SETTING['local']['download']
   FileUtils.mkdir download unless File.exist?(download)
   f = params[:file]
+  tripkey = params[:tripkey]
   redirect '/upload' if f.nil? # TODO error
   path = f[:tempfile].path
   origname = f[:filename]
@@ -91,6 +94,13 @@ post '/upload' do
       dropdigest = @@redis.rpop(IBDB_RECENT)
       FileUtils.rm_f(File.join(download, dropdigest))
     end
+  end
+  if tripkey
+    tripcode = Base64.encode64(Digest::SHA1.digest(tripkey))[0, 12]
+    n = @@redis.lpush(IBDB_TRIPCODE_LIST, tripcode)
+    @@redis.rpop(IBDB_TRIPCODE_LIST) if n.size > 100
+    @@redis.lpush(IBDB_TRIPCODE + tripcode, encdigest)
+    @@redis.set(IBDB_TRIPCODE_FUND + tripcode, 10.01) # TODO
   end
   session[:uploaded] = {
     :name => name,
@@ -133,4 +143,12 @@ get '/download/:name' do
       out << cipher.final if cipher
     end
   end
+end
+
+get '/tripcode/:tripcode' do
+  tripcode = params[:tripcode]
+  files = @@redis.lrange(IBDB_TRIPCODE + tripcode, 0, 100)
+  fund = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
+  haml :tripcode, :locals => { :tripcode => tripcode, :files => files,
+      :fund => fund }
 end

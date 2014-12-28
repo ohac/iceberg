@@ -21,7 +21,7 @@
       %br
       %label Tripcode tag (Option)
       %br
-      %input.bigbutton{:type => 'input'}
+      %input.bigbutton{:type => 'input', :name => 'tripkey'}
     %h2 Download file (max 100 files)
     - if uploaded
       - name = uploaded[:name]
@@ -35,7 +35,9 @@
       %a.files{:href => "/download/#{file}", :id => file}= filename
       %br
     %h2 Tripcode tag (max 100 tags)
-    Under development
+    - tripcodelist.each do |tripcode|
+      %a.files{:href => "/tripcode/#{tripcode}"}= tripcode
+      %br
     %h2 Meta data in your browser
     Backup below text data to other storage.
     %br
