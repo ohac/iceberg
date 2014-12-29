@@ -26,18 +26,25 @@ $(function(){
     sepa = '\n';
   }
   $('#metadata').val(metadata);
-  $('#metadata').change(function () {
-    var metadata = $(this).val();
+  $('#apply').click(function () {
+    var metadata = $('#metadata').val();
     $(metadata.split('\n')).each(function (i, x) {
       var kv = x.split('=');
       var k = kv[0];
       var v = kv[1];
-      if (v.length == 0) {
-        localStorage.removeItem(k);
-      }
-      else {
-        localStorage.setItem(k, v);
+      if (v) {
+        if (v.length == 0) {
+          localStorage.removeItem(k);
+        }
+        else {
+          localStorage.setItem(k, v);
+        }
       }
     });
+  });
+  $('#deleteall').click(function () {
+    if (confirm('Are you sure?')) {
+      localStorage.clear();
+    }
   });
 });
