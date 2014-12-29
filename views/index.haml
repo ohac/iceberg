@@ -20,7 +20,7 @@
         %br
         Tripcode: 
         %a{:href => "/tripcode/#{tripcode}"}= tripcode
-    %h2 Upload (max 20 MiB)
+    %h2 Upload (max #{maxfilesize / (1024 * 1024)} MiB)
     %form{:action => '/upload', :method => 'post',
         :enctype => 'multipart/form-data'}
       %label{:for => 'file1'} STEP 1: Choose File
@@ -36,7 +36,7 @@
       %br
       \#
       %input.bigbutton{:type => 'input', :name => 'tripkey'}
-    %h2 Download (max 200 files)
+    %h2 Download (max #{filemax} files)
     - recentfiles.each do |file|
       - filename = "encrypted-#{file[0, 8]}"
       %a.files{:href => "/download/#{file}", :id => file}= filename

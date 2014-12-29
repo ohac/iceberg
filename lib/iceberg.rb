@@ -16,6 +16,8 @@ unless File.exist?(SETTING_FILE)
     setting = {
       'local' => {
         'download' => File.join(SETTING_DIR, 'download'),
+        'filemax' => 200,
+        'maxfilesize' => 20 * 1024 * 1024, # 20 MiB
       },
     }
     fd.puts(YAML.dump(setting))

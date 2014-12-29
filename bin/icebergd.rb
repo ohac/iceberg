@@ -56,12 +56,16 @@ end
 @@algorithm = 'AES-256-CBC'
 
 get '/' do
-  recentfiles = @@redis.lrange(IBDB_RECENT, 0, 200) # TODO
+  filemax = SETTING['local']['filemax']
+  recentfiles = @@redis.lrange(IBDB_RECENT, 0, filemax)
   tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET)
   uploaded = session[:uploaded]
   session[:uploaded] = nil
+  filemax = SETTING['local']['filemax']
+  maxfilesize = SETTING['local']['maxfilesize']
   haml :index, :locals => { :recentfiles => recentfiles,
-      :uploaded => uploaded, :tripcodelist => tripcodelist }
+      :uploaded => uploaded, :tripcodelist => tripcodelist,
+      :filemax => filemax, :maxfilesize => maxfilesize }
 end
 
 post '/upload' do
@@ -69,7 +73,9 @@ post '/upload' do
   redirect '/' if f.nil? # TODO error
   path = f[:tempfile].path
   begin
-    rv = Iceberg.upload(path, params[:tripkey], 20 * 1024 * 1024, 200) # TODO
+    filemax = SETTING['local']['filemax']
+    maxfilesize = SETTING['local']['maxfilesize']
+    rv = Iceberg.upload(path, params[:tripkey], maxfilesize, filemax)
     origname = f[:filename]
     origname = File.basename(origname)
     origname = NKF.nkf("-w", origname) # TODO i18n
@@ -87,7 +93,9 @@ post '/api/v1/upload' do
     f = params[:file]
     raise if f.nil?
     path = f[:tempfile].path
-    rv = Iceberg.upload(path, params[:tripkey], 20 * 1024 * 1024, 200) # TODO
+    filemax = SETTING['local']['filemax']
+    maxfilesize = SETTING['local']['maxfilesize']
+    rv = Iceberg.upload(path, params[:tripkey], maxfilesize, filemax)
   rescue => x
     rv = { :error => x.to_s }
   end
