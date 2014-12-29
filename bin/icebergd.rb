@@ -53,7 +53,7 @@ before do
 end
 
 @@redis = Redis.new
-@@algorithm = 'AES-256-CBC'
+@@algorithm = 'AES-128-CBC'
 
 get '/' do
   filemax = SETTING['local']['filemax']
@@ -119,10 +119,12 @@ get '/download/:name' do
         "#{disp}; filename=\"#{filename}\""
   end
   download = SETTING['local']['download']
-  digest = params[:digest]
-  if digest
+  hexdigest = params[:digest]
+  if hexdigest
+    digest = hexdigest.pack('H*')
     cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).decrypt
-    cipher.key = digest
+    cipher.key = digest[0, 16]
+    cipher.iv = digest[4, 16]
   end
 
   file = File.join(download, name)

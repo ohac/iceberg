@@ -39,9 +39,11 @@ class Iceberg
     tripkey = nil if tripkey.empty?
     raise 'size over' if File.new(path).size > filesize
     alldata = File.open(path, 'rb'){|fd| fd.read}
-    digest = Digest::SHA1.hexdigest(alldata)
+    digest = Digest::SHA1.digest(alldata)
+    hexdigest = digest.unpack('H*')[0]
     cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).encrypt
-    cipher.key = digest
+    cipher.key = digest[0, 16]
+    cipher.iv = digest[4, 16]
     encdata = cipher.update(alldata) + cipher.final
     encdigest = Digest::SHA1.hexdigest(encdata)
     dest = File.join(download, encdigest)
@@ -86,7 +88,7 @@ class Iceberg
       end
     end
     {
-      :digest => digest,
+      :digest => hexdigest,
       :encdigest => encdigest,
       :tripcode => tripcode,
     }
