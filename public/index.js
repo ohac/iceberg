@@ -41,6 +41,7 @@ $(function(){
         }
       }
     });
+    location.href = '/';
   });
   $('#deleteall').click(function () {
     if (confirm('Are you sure?')) {

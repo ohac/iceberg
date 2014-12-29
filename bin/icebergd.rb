@@ -129,15 +129,19 @@ get '/download/:name' do
 
   file = File.join(download, name)
   stream do |out|
-    File.open(file, 'rb') do |fd|
-      loop do
-        data = fd.read(32 * 1024)
-        break unless data
-        data = cipher.update(data) if cipher
-        out << data
-        sleep 0.1
+    begin
+      File.open(file, 'rb') do |fd|
+        loop do
+          data = fd.read(32 * 1024)
+          break unless data
+          data = cipher.update(data) if cipher
+          out << data
+          sleep 0.1
+        end
+        out << cipher.final if cipher
       end
-      out << cipher.final if cipher
+    rescue => x
+p x
     end
   end
 end
