@@ -33,12 +33,16 @@ IBDB_TRIPCODE_FUND = 'iceberg:tripcode:fund:'
 
 class Iceberg
 
-  def self.upload(path, tripkey, filesize, filemax)
+  def self.upload(path, tripkey, filesize, filemax, text = nil)
     download = SETTING['local']['download']
     FileUtils.mkdir download unless File.exist?(download)
     tripkey = nil if tripkey.empty?
-    raise 'size over' if File.new(path).size > filesize
-    alldata = File.open(path, 'rb'){|fd| fd.read}
+    if path
+      raise 'size over' if File.new(path).size > filesize
+      alldata = File.open(path, 'rb'){|fd| fd.read}
+    else
+      alldata = text
+    end
     digest = Digest::SHA1.digest(alldata)
     hexdigest = digest.unpack('H*')[0]
     cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).encrypt

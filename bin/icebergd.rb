@@ -21,6 +21,8 @@ ICEBERG_HOME = File.dirname(__FILE__) + '/../'
 set :public_folder, ICEBERG_HOME + 'public'
 set :views, ICEBERG_HOME + 'views'
 
+FORBIDDEN_CHARS = " <>:\\/*?\"|&',;`"
+
 enable :sessions
 
 helpers do
@@ -79,7 +81,7 @@ post '/upload' do
     origname = f[:filename]
     origname = File.basename(origname)
     origname = NKF.nkf("-w", origname) # TODO i18n
-    origname = origname.tr(" ", "_") # TODO check other XSS
+    origname = origname.tr(FORBIDDEN_CHARS, "_")
     rv[:name] = origname
     session[:uploaded] = rv
   rescue => x
@@ -103,6 +105,24 @@ post '/api/v1/upload' do
   rv.to_json + "\n"
 end
 
+post '/uploadtext' do
+  # TODO
+  text = params[:text]
+  title = params[:title]
+  begin
+    filemax = SETTING['local']['filemax']
+    maxfilesize = SETTING['local']['maxfilesize']
+    rv = Iceberg.upload(nil, params[:tripkey], maxfilesize, filemax, text)
+    origname = "#{title}.txt"
+    origname = origname.tr(FORBIDDEN_CHARS, "_")
+    rv[:name] = origname
+    session[:uploaded] = rv
+  rescue => x
+p x
+  end
+  redirect '/'
+end
+
 get '/download/:name' do
   name = params[:name]
   filename = params[:filename]
@@ -111,9 +131,14 @@ get '/download/:name' do
     when /\.png$/ ; ['image/png', 'inline']
     when /\.gif$/ ; ['image/gif', 'inline']
     when /\.mp3$/ ; ['audio/mpeg', 'inline']
+    when /\.txt$/ ; ['text/plain', 'inline']
     else ['application/octet-stream', 'attachment']
   end
-  content_type ctype
+  if ctype == 'text/plain'
+    content_type ctype, :charset => 'utf-8'
+  else
+    content_type ctype
+  end
   if filename
     response.headers['Content-Disposition'] =
         "#{disp}; filename=\"#{filename}\""

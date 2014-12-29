@@ -36,6 +36,23 @@
       %br
       \#
       %input.bigbutton{:type => 'input', :name => 'tripkey'}
+    %hr
+    %h2 Upload text
+    %form{:action => '/uploadtext', :method => 'post',
+        :enctype => 'multipart/form-data'}
+      - title = Time.now.strftime('%Y-%m-%d_%H:%M_')
+      %input{:type => 'input', :name => 'title', :value => title, :size => 50}
+      %br
+      %textarea{:rows => 10, :cols => 40, :name => 'text'}
+      %br
+      %input.bigbutton{:type => 'submit', :value => 'Upload'}
+      %br
+      %br
+      %label Tripcode tag (Option)
+      %br
+      \#
+      %input.bigbutton{:type => 'input', :name => 'tripkey'}
+    %hr
     %h2 Download (max #{filemax} files)
     - recentfiles.each do |file|
       - filename = "encrypted-#{file[0, 8]}"
