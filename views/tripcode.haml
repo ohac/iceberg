@@ -7,7 +7,7 @@
     %script{:type => 'text/javascript', :src => '/index.js'}
   %body
     %h1 Tripcode #{tripcode}
-    %p Fund: #{fund} SHA (Under development)
+    %p Fund: #{fund} MiB/Round (Under development)
     - files.each do |file|
       - filename = "encrypted-#{file[0, 8]}"
       %a.files{:href => "/download/#{file}", :id => file}= filename
