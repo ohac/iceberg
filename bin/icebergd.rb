@@ -121,7 +121,7 @@ get '/download/:name' do
   download = SETTING['local']['download']
   hexdigest = params[:digest]
   if hexdigest
-    digest = hexdigest.pack('H*')
+    digest = [hexdigest].pack('H*')
     cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).decrypt
     cipher.key = digest[0, 16]
     cipher.iv = digest[4, 16]
