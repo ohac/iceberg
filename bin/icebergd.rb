@@ -64,71 +64,20 @@ get '/' do
 end
 
 post '/upload' do
-  download = SETTING['local']['download']
-  FileUtils.mkdir download unless File.exist?(download)
   f = params[:file]
-  tripkey = params[:tripkey]
-  tripkey = nil if tripkey.empty?
   redirect '/' if f.nil? # TODO error
   path = f[:tempfile].path
-  origname = f[:filename]
-  origname = NKF.nkf("-w", origname) # TODO i18n
-  origname = origname.tr(" ", "_")
-  name = File.basename(origname)
-  redirect '/' if File.new(path).size > 20 * 1024 * 1024 # TODO
-  alldata = File.open(path, 'rb'){|fd| fd.read}
-  digest = Digest::SHA1.hexdigest(alldata)
-
-  cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).encrypt
-  cipher.key = digest
-  encdata = cipher.update(alldata) + cipher.final
-  encdigest = Digest::SHA1.hexdigest(encdata)
-  dest = File.join(download, encdigest)
-  unless File.exist?(dest)
-    File.open(dest, 'wb'){|fd| fd.write(encdata)}
-    n = @@redis.lpush(IBDB_RECENT, encdigest)
-    tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET) || []
-    while n.size > 200 do # TODO
-      n = @@redis.llen(IBDB_RECENT)
-      dropdigest = @@redis.rpop(IBDB_RECENT)
-      dropfile = File.join(download, dropdigest)
-      dropsize = File.size(dropfile) / (1024 * 1024) # MiB
-      dropsize = 1 if dropsize <= 0
-      found = false
-      tripcodelist.each do |tripcode|
-        next unless @@redis.sismember(IBDB_TRIPCODE + tripcode, dropdigest)
-        v = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
-        if v.to_i > 0
-          @@redis.decrby(IBDB_TRIPCODE_FUND + tripcode, dropsize)
-          found = true
-          break
-        end
-      end
-      unless found
-        FileUtils.rm_f(dropfile)
-        break
-      end
-      @@redis.lpush(IBDB_RECENT, dropdigest)
-    end
+  begin
+    rv = Iceberg.upload(path, params[:tripkey], 20 * 1024 * 1024, 200) # TODO
+    origname = f[:filename]
+    origname = File.basename(origname)
+    origname = NKF.nkf("-w", origname) # TODO i18n
+    origname = origname.tr(" ", "_") # TODO check other XSS
+    rv[:name] = origname
+    session[:uploaded] = rv
+  rescue => x
+p x
   end
-  if tripkey
-    tripcode = Base64.encode64(Digest::SHA1.digest(tripkey))[0, 12]
-    @@redis.sadd(IBDB_TRIPCODE_SET, tripcode)
-    @@redis.sadd(IBDB_TRIPCODE + tripcode, encdigest)
-    # TODO test (initial bonus)
-    v = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
-    if v
-      @@redis.incrby(IBDB_TRIPCODE_FUND + tripcode, 1)
-    else
-      @@redis.set(IBDB_TRIPCODE_FUND + tripcode, 2)
-    end
-  end
-  session[:uploaded] = {
-    :name => name,
-    :digest => digest,
-    :encdigest => encdigest,
-    :tripcode => tripcode,
-  }
   redirect '/'
 end
 
