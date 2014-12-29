@@ -15,6 +15,7 @@ require 'sinatra'
 require 'nkf'
 require 'fileutils'
 require 'base64'
+require 'json'
 
 ICEBERG_HOME = File.dirname(__FILE__) + '/../'
 set :public_folder, ICEBERG_HOME + 'public'
@@ -79,6 +80,19 @@ post '/upload' do
 p x
   end
   redirect '/'
+end
+
+post '/api/v1/upload' do
+  begin
+    f = params[:file]
+    raise if f.nil?
+    path = f[:tempfile].path
+    rv = Iceberg.upload(path, params[:tripkey], 20 * 1024 * 1024, 200) # TODO
+  rescue => x
+    rv = { :error => x.to_s }
+  end
+  content_type CONTENT_TYPES[:js], :charset => 'utf-8'
+  rv.to_json + "\n"
 end
 
 get '/download/:name' do

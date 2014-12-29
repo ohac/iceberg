@@ -72,6 +72,7 @@ class Iceberg
     end
     if tripkey
       tripcode = Base64.encode64(Digest::SHA1.digest(tripkey))[0, 12]
+      tripcode = tripcode.tr('/', '.')
       @@redis.sadd(IBDB_TRIPCODE_SET, tripcode)
       @@redis.sadd(IBDB_TRIPCODE + tripcode, encdigest)
       # TODO test (initial bonus)
