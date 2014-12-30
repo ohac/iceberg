@@ -25,3 +25,16 @@ example
     key=3F786850E387550FDAB836ED7E6DC881
     iv =E387550FDAB836ED7E6DC881DE23001B
     Zaf76KVeOWrs4UEWGqSReg==
+
+## Copyright and license
+
+* Iceberg
+  * The MIT License (MIT)
+  * Copyright (c) 2014-2014 OHASHI Hideya
+* jQuery
+  * The MIT License (MIT)
+* Twitter Bootstrap
+  * The MIT License (MIT)
+  * Copyright (c) 2011-2014 Twitter, Inc
+* Bootstrap FileStyle
+  * The MIT License (MIT)
