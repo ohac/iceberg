@@ -1,0 +1,51 @@
+%html
+  %head
+    %title #{filename} - Online Storage - Iceberg
+    %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
+        :media => "screen"}
+    %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css", :rel => "stylesheet"}
+    %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css", :rel => "stylesheet"}
+    %link{:href => "/starter-template.css", :rel => "stylesheet"}
+  %body
+    %nav{:class => "navbar navbar-inverse navbar-fixed-top"}
+      %div.container
+        %div.navbar-header
+          %button{:type => "button", :class => "navbar-toggle collapsed",
+              "data-toggle" => "collapse", "data-target" => "#navbar",
+              "aria-expanded" => "false", "aria-controls" => "navbar"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "/"} Online Storage - Iceberg
+        %div#navbar{:class => "collapse navbar-collapse"}
+          %ul{:class => "nav navbar-nav"}
+            %li.active
+              %a{:href => "/"} Home
+            %li
+              %a{:href => 'https://github.com/ohac/iceberg'} Source
+            %li
+              %a{:href => 'https://github.com/ohac/iceberg/wiki'} Roadmap
+    %div.container
+      %div.starter-template
+        %h1 #{filename}
+        - encdigest = request.path_info.split('/').last
+        - hostport = request.scheme + '://' + request.host
+        - port = request.port
+        - hostport += ":#{port}" if port != 80
+        - params = hexdigest ? "?digest=#{hexdigest}&filename=#{filename}" : ''
+        - url = "#{name}#{params}"
+        - if hexdigest
+          %input#name{:type => :hidden, :value => filename}
+          %input#digest{:type => :hidden, :value => hexdigest}
+          %input#encdigest{:type => :hidden, :value => encdigest}
+        %a.files{:href => "/download/#{url}"}
+          %button{:type => "button", :class => "btn btn-default btn-lg"}
+            %span{:class => 'glyphicon glyphicon-cloud-download'} Download
+        %hr
+        %label Direct URL:
+        %textarea#rawurl{:rows => 2, :class => 'form-control'}
+          #{hostport}/download/#{url}
+    %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
+    %script{:type => 'text/javascript', :src => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'}
+    %script{:type => 'text/javascript', :src => '/show.js'}

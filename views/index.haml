@@ -134,7 +134,7 @@
             - recentfiles.each do |file|
               - filename = "encrypted-#{file[0, 8]}"
               %div
-                %a.files{:href => "/download/#{file}", :id => file}= filename
+                %a.files{:href => "/show/#{file}", :id => file}= filename
             %br
             #{recentfiles.size} / #{filemax} files in FIFO.
           %div#tagtab{:role => :tabpanel, :class => 'tab-pane'}

@@ -44,7 +44,7 @@ CONTENT_TYPES = {
     }
 
 before do
-  request_uri = case request.env['REQUEST_URI']
+  request_uri = case request.env['REQUEST_URI'].split('?')[0]
     when /\.css$/ ; :css
     when /\.js$/ ; :js
     when /\.txt$/ ; :txt
@@ -121,6 +121,14 @@ post '/uploadtext' do
 p x
   end
   redirect '/'
+end
+
+get '/show/:name' do
+  name = params[:name]
+  filename = params[:filename]
+  hexdigest = params[:digest]
+  haml :show, :locals => {:name => name, :filename => filename,
+      :hexdigest => hexdigest}
 end
 
 get '/download/:name' do
