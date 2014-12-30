@@ -131,6 +131,7 @@ get '/download/:name' do
     when /\.png$/ ; ['image/png', 'inline']
     when /\.gif$/ ; ['image/gif', 'inline']
     when /\.mp3$/ ; ['audio/mpeg', 'inline']
+    when /\.webm$/ ; ['video/webm', 'inline']
     when /\.txt$/ ; ['text/plain', 'inline']
     else ['application/octet-stream', 'attachment']
   end
