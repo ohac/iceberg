@@ -49,54 +49,73 @@
               Tripcode:
               %a{:href => "/tripcode/#{tripcode}"}= tripcode
         %h1 Upload
-        %form{:action => '/upload', :method => 'post',
-            :enctype => 'multipart/form-data'}
-          %label STEP 1
-          %br
-          %input{:type => 'file', :name => 'file'}
-          Up to #{maxfilesize / (1024 * 1024)} MiB.
-          %br
-          %br
-          %label STEP 2
-          %br
-          %button{:type => 'submit',
-              :class => 'btn btn-lg btn-default'}
-            %span{:class => 'glyphicon glyphicon-cloud-upload',
-                'aria-hidden' => true}
-            Upload
-          %br
-          %br
-          %label Tripcode Tag (Option)
-          %br
-          %div{:class => 'input-group'}
-            %span{:class => 'input-group-addon', :id => 'basic-addon1'} #
-            %input{:type => :text, :class => 'form-control',
-                :placeholder => 'Trip Key',
-                'aria-describedby' => 'basic-addon1', :name => 'tripkey'}
-        %hr
-        %h1 Upload Text
-        %form{:action => '/uploadtext', :method => 'post',
-            :enctype => 'multipart/form-data'}
-          - title = Time.now.strftime('%Y-%m-%d_%H:%M_')
-          %input{:type => 'input', :name => 'title', :value => title,
-              :size => 50}
-          %br
-          %textarea{:rows => 10, :cols => 40, :name => 'text'}
-          %br
-          %button{:type => 'submit',
-              :class => 'btn btn-lg btn-default'}
-            %span{:class => 'glyphicon glyphicon-cloud-upload',
-                'aria-hidden' => true}
-            Upload
-          %br
-          %br
-          %label Tripcode Tag (Option)
-          %br
-          %div{:class => 'input-group'}
-            %span{:class => 'input-group-addon', :id => 'basic-addon2'} #
-            %input{:type => :text, :class => 'form-control',
-                :placeholder => 'Trip Key',
-                'aria-describedby' => 'basic-addon2', :name => 'tripkey'}
+        %ul#uploadtabs{:class => 'nav nav-tabs'}
+          %li.active{:role => 'presentation'}
+            %a{:href => '#filetab', 'aria-controls' => 'filetab', :role => :tab,
+                'data-toggle' => 'tab'}
+              File
+          %li{:role => 'presentation'}
+            %a{:href => '#texttab', 'aria-controls' => 'texttab', :role => :tab,
+                'data-toggle' => 'tab'}
+              Text
+        %div{:class => 'tab-content'}
+          %div#filetab{:role => :tabpanel, :class => 'tab-pane active'}
+
+            %form{:action => '/upload', :method => 'post',
+                :enctype => 'multipart/form-data'}
+              %label STEP 1
+              %br
+              %input{:type => 'file', :name => 'file'}
+              Up to #{maxfilesize / (1024 * 1024)} MiB.
+              %br
+              %br
+              %label STEP 2
+              %br
+              %button{:type => 'submit',
+                  :class => 'btn btn-lg btn-default'}
+                %span{:class => 'glyphicon glyphicon-cloud-upload',
+                    'aria-hidden' => true}
+                Upload
+              %br
+              %br
+              %label Tripcode Tag (Option)
+              %br
+              %div{:class => 'input-group'}
+                %span{:class => 'input-group-addon', :id => 'basic-addon1'} #
+                %input{:type => :text, :class => 'form-control',
+                    :placeholder => 'Trip Key',
+                    'aria-describedby' => 'basic-addon1', :name => 'tripkey'}
+
+          %div#texttab{:role => :tabpanel, :class => 'tab-pane'}
+            %form{:action => '/uploadtext', :method => 'post',
+                :enctype => 'multipart/form-data'}
+              %label STEP 1
+              %br
+              - title = Time.now.strftime('%Y-%m-%d %H:%M ')
+              %input{:type => 'input', :name => 'title', :value => title,
+                  :class => 'form-control'}
+              %br
+              %textarea{:rows => 10, :cols => 40, :name => 'text',
+                  :class => 'form-control'}
+              %br
+              %br
+              %label STEP 2
+              %br
+              %button{:type => 'submit',
+                  :class => 'btn btn-lg btn-default'}
+                %span{:class => 'glyphicon glyphicon-cloud-upload',
+                    'aria-hidden' => true}
+                Upload
+              %br
+              %br
+              %label Tripcode Tag (Option)
+              %br
+              %div{:class => 'input-group'}
+                %span{:class => 'input-group-addon', :id => 'basic-addon2'} #
+                %input{:type => :text, :class => 'form-control',
+                    :placeholder => 'Trip Key',
+                    'aria-describedby' => 'basic-addon2', :name => 'tripkey'}
+
         %hr
         %h1 Download
         #{recentfiles.size} / #{filemax} files in FIFO.
@@ -115,7 +134,7 @@
         %br
         You can share and edit this meta data.
         %br
-        %textarea#metadata{:rows => 10, :cols => 40}
+        %textarea#metadata{:class => 'form-control', :rows => 10}
         %br
         %input#apply{:type => 'button', :value => 'Apply',
             :class => 'btn btn-lg btn-default'}

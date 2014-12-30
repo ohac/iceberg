@@ -49,4 +49,8 @@ $(function(){
     }
   });
   $(":file").filestyle({input: false, icon: true, size: 'lg'});
+  $('#uploadtabs a').click(function (e) {
+    e.preventDefault()
+    $(this).tab('show')
+  });
 });
