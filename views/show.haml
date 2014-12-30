@@ -14,7 +14,7 @@
     - case filename
       - when /\.jpg$/, /\.gif$/, /\.png$/
         %meta{:property => 'twitter:card', :content => 'photo'}
-        %meta{:name => 'twitter:image', :content => dllink}
+        %meta{:name => 'twitter:image', :content => "#{hostport}#{dllink}"}
         %meta{:name => 'twitter:url', :content => request.url}
       - else
         %meta{:property => 'twitter:card', :content => 'summary'}
