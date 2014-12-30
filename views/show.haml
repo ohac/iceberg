@@ -1,4 +1,5 @@
 %html
+  - filename = filename || 'Encrypted File'
   %head
     %title #{filename} - Online Storage - Iceberg
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
@@ -39,13 +40,28 @@
           %input#name{:type => :hidden, :value => filename}
           %input#digest{:type => :hidden, :value => hexdigest}
           %input#encdigest{:type => :hidden, :value => encdigest}
-        %a.files{:href => "/download/#{url}"}
-          %button{:type => "button", :class => "btn btn-default btn-lg"}
-            %span{:class => 'glyphicon glyphicon-cloud-download'} Download
+        - dllink = "/download/#{url}"
+        - case filename
+          - when /\.txt$/
+            %iframe{:src => dllink}
+            %hr
+          - when /\.webm$/
+            %video{:width => 640, :height => 360, :controls => :controls}
+              %source{:src => dllink}
+            %hr
+          - when /\.jpg$/, /\.gif$/, /\.png$/
+            %img{:src => dllink}
+            %hr
+        %a{:href => dllink, :class => 'btn btn-default btn-lg'}
+          %span{:class => 'glyphicon glyphicon-cloud-download'} Download
         %hr
+        %label Share URL:
+        %textarea{:rows => 2, :class => 'form-control'}
+          #{hostport}/show/#{url}
+        %br
         %label Direct URL:
-        %textarea#rawurl{:rows => 2, :class => 'form-control'}
-          #{hostport}/download/#{url}
+        %textarea{:rows => 2, :class => 'form-control'}
+          #{hostport}/#{dllink}
     %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
     %script{:type => 'text/javascript', :src => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'}
     %script{:type => 'text/javascript', :src => '/show.js'}
