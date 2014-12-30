@@ -21,14 +21,16 @@ $(function(){
       y.hide();
     }
   });
-  var metadata = ''
-  var sepa = ''
-  for (var i = 0; i < localStorage.length; i++) {
-    var k = localStorage.key(i);
-    metadata = metadata + sepa + k + '=' + localStorage.getItem(k);
-    sepa = '\n';
-  }
-  $('#metadata').val(metadata);
+  $('#showkeys').click(function () {
+    var metadata = ''
+    var sepa = ''
+    for (var i = 0; i < localStorage.length; i++) {
+      var k = localStorage.key(i);
+      metadata = metadata + sepa + k + '=' + localStorage.getItem(k);
+      sepa = '\n';
+    }
+    $('#metadata').val(metadata);
+  });
   $('#apply').click(function () {
     var metadata = $('#metadata').val();
     $(metadata.split('\n')).each(function (i, x) {
