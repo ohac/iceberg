@@ -37,7 +37,7 @@ $(function(){
     var y = $(x);
     var id = y.attr('id');
     var tripcodelist = localStorage.getItem('tripcodelist');
-    if (tripcodelist.indexOf(id) >= 0) {
+    if (tripcodelist && tripcodelist.indexOf(id) >= 0) {
       y.html(y.html() +
           '<span class="glyphicon glyphicon-star" aria-hidden="true"></span>');
     }
