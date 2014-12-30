@@ -1,7 +1,25 @@
 %html
   - filename = filename || 'Encrypted File'
+  - encdigest = request.path_info.split('/').last
+  - hostport = request.scheme + '://' + request.host
+  - port = request.port
+  - hostport += ":#{port}" if port != 80
+  - params = hexdigest ? "?digest=#{hexdigest}&filename=#{filename}" : ''
+  - url = "#{name}#{params}"
+  - dllink = "/download/#{url}"
   %head
     %title #{filename} - Online Storage - Iceberg
+    %meta{:property => 'twitter:site', :content => 'ohac'}
+    %meta{:name => 'twitter:title', :content => filename}
+    - case filename
+      - when /\.jpg$/, /\.gif$/, /\.png$/
+        %meta{:property => 'twitter:card', :content => 'photo'}
+        %meta{:name => 'twitter:image', :content => dllink}
+        %meta{:name => 'twitter:url', :content => request.url}
+      - else
+        %meta{:property => 'twitter:card', :content => 'summary'}
+        %meta{:name => 'twitter:description',
+            :content => 'Store and share files on Iceberg.'}
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
     %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css", :rel => "stylesheet"}
@@ -30,17 +48,10 @@
     %div.container
       %div.starter-template
         %h1 #{filename}
-        - encdigest = request.path_info.split('/').last
-        - hostport = request.scheme + '://' + request.host
-        - port = request.port
-        - hostport += ":#{port}" if port != 80
-        - params = hexdigest ? "?digest=#{hexdigest}&filename=#{filename}" : ''
-        - url = "#{name}#{params}"
         - if hexdigest
           %input#name{:type => :hidden, :value => filename}
           %input#digest{:type => :hidden, :value => hexdigest}
           %input#encdigest{:type => :hidden, :value => encdigest}
-        - dllink = "/download/#{url}"
         - case filename
           - when /\.txt$/
             %iframe{:src => dllink}
