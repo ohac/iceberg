@@ -51,6 +51,7 @@
               %br
               Tripcode:
               %a{:href => "/tripcode/#{tripcode}"}= tripcode
+              %input#tripcode{:type => :hidden, :value => tripcode}
         %h1 Upload
         %ul#uploadtabs{:class => 'nav nav-tabs'}
           %li.active{:role => 'presentation'}
@@ -157,7 +158,8 @@
           %div#tagtab{:role => :tabpanel, :class => 'tab-pane'}
             - tripcodelist.each do |tripcode|
               %div
-                %a{:href => "/tripcode/#{tripcode}"}= tripcode
+                %a.tripcodelist{:href => "/tripcode/#{tripcode}",
+                    :id => tripcode}= tripcode
         %hr
         %h1 Cryptographic Keys
         All keys are stored on your browser's storage.

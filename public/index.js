@@ -3,8 +3,20 @@ $(function(){
   if (encdigest) {
     var name = $('#name').val();
     var digest = $('#digest').val();
+    var tripcode = $('#tripcode').val();
     localStorage.setItem(encdigest + ':name', name);
     localStorage.setItem(encdigest + ':digest', digest);
+    if (tripcode) {
+      var list = localStorage.getItem('tripcodelist');
+      if (list) {
+        if (list.indexOf(tripcode) < 0) {
+          localStorage.setItem('tripcodelist', list + ',' + tripcode);
+        }
+      }
+      else {
+        localStorage.setItem('tripcodelist', tripcode);
+      }
+    }
   }
   $('.files').each(function(i, x) {
     var y = $(x);
@@ -19,6 +31,14 @@ $(function(){
     }
     else {
       y.hide();
+    }
+  });
+  $('.tripcodelist').each(function(i, x) {
+    var y = $(x);
+    var id = y.attr('id');
+    var tripcodelist = localStorage.getItem('tripcodelist');
+    if (tripcodelist.indexOf(id) >= 0) {
+      y.text(y.text() + ' (Your Tag)');
     }
   });
   $('#showkeys').click(function () {
