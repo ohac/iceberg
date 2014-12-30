@@ -21,7 +21,7 @@ ICEBERG_HOME = File.dirname(__FILE__) + '/../'
 set :public_folder, ICEBERG_HOME + 'public'
 set :views, ICEBERG_HOME + 'views'
 
-FORBIDDEN_CHARS = " <>:\\/*?\"|&',;`"
+FORBIDDEN_CHARS = " #<>:\\/*?\"|&',;`"
 
 enable :sessions
 
@@ -139,6 +139,8 @@ get '/download/:name' do
     when /\.png$/ ; ['image/png', 'inline']
     when /\.gif$/ ; ['image/gif', 'inline']
     when /\.mp3$/ ; ['audio/mpeg', 'inline']
+    when /\.ogg$/ ; ['audio/ogg', 'inline']
+    when /\.flac$/ ; ['audio/flac', 'inline']
     when /\.webm$/ ; ['video/webm', 'inline']
     when /\.txt$/ ; ['text/plain', 'inline']
     else ['application/octet-stream', 'attachment']

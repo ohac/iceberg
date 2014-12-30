@@ -52,6 +52,9 @@
           - when /\.jpg$/, /\.gif$/, /\.png$/
             %img{:src => dllink}
             %hr
+          - when /\.mp3$/, /\.ogg$/, /\.flac$/
+            %audio{:src => dllink, :controls => :controls}
+            %hr
         %a{:href => dllink, :class => 'btn btn-default btn-lg'}
           %span{:class => 'glyphicon glyphicon-cloud-download'} Download
         %hr
