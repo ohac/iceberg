@@ -48,5 +48,5 @@ $(function(){
       localStorage.clear();
     }
   });
-  $(":file").filestyle({input: false, icon: false, size: 'lg'});
+  $(":file").filestyle({input: false, icon: true, size: 'lg'});
 });
