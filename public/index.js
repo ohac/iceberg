@@ -17,6 +17,9 @@ $(function(){
       y.attr('href', href);
       y.html(name);
     }
+    else {
+      y.hide();
+    }
   });
   var metadata = ''
   var sepa = ''

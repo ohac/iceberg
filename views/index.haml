@@ -63,6 +63,7 @@
 
             %form{:action => '/upload', :method => 'post',
                 :enctype => 'multipart/form-data'}
+              %br
               %label STEP 1
               %br
               %input{:type => 'file', :name => 'file'}
@@ -89,6 +90,7 @@
           %div#texttab{:role => :tabpanel, :class => 'tab-pane'}
             %form{:action => '/uploadtext', :method => 'post',
                 :enctype => 'multipart/form-data'}
+              %br
               %label STEP 1
               %br
               - title = Time.now.strftime('%Y-%m-%d %H:%M ')
@@ -97,7 +99,6 @@
               %br
               %textarea{:rows => 10, :cols => 40, :name => 'text',
                   :class => 'form-control'}
-              %br
               %br
               %label STEP 2
               %br
@@ -118,16 +119,28 @@
 
         %hr
         %h1 Download
-        #{recentfiles.size} / #{filemax} files in FIFO.
+        %ul#downloadtabs{:class => 'nav nav-tabs'}
+          %li.active{:role => 'presentation'}
+            %a{:href => '#dltab', 'aria-controls' => 'dltab', :role => :tab,
+                'data-toggle' => 'tab'}
+              Files
+          %li{:role => 'presentation'}
+            %a{:href => '#tagtab', 'aria-controls' => 'tagtab', :role => :tab,
+                'data-toggle' => 'tab'}
+              Tags
         %br
-        - recentfiles.each do |file|
-          - filename = "encrypted-#{file[0, 8]}"
-          %a.files{:href => "/download/#{file}", :id => file}= filename
-          %br
-        %h1 Tripcode tags
-        - tripcodelist.each do |tripcode|
-          %a{:href => "/tripcode/#{tripcode}"}= tripcode
-          %br
+        %div{:class => 'tab-content'}
+          %div#dltab{:role => :tabpanel, :class => 'tab-pane active'}
+            - recentfiles.each do |file|
+              - filename = "encrypted-#{file[0, 8]}"
+              %div
+                %a.files{:href => "/download/#{file}", :id => file}= filename
+            %br
+            #{recentfiles.size} / #{filemax} files in FIFO.
+          %div#tagtab{:role => :tabpanel, :class => 'tab-pane'}
+            - tripcodelist.each do |tripcode|
+              %div
+                %a{:href => "/tripcode/#{tripcode}"}= tripcode
         %hr
         %h1 Meta data in your browser
         Backup below text data to other storage.
