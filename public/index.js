@@ -38,7 +38,8 @@ $(function(){
     var id = y.attr('id');
     var tripcodelist = localStorage.getItem('tripcodelist');
     if (tripcodelist.indexOf(id) >= 0) {
-      y.text(y.text() + ' (Your Tag)');
+      y.html(y.html() +
+          '<span class="glyphicon glyphicon-star" aria-hidden="true"></span>');
     }
   });
   $('#showkeys').click(function () {
