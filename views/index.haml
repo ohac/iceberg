@@ -44,6 +44,9 @@
                 'aria-label' => 'Close'}
               %span{'aria-hidden' => true} &times;
             Uploaded
+            %br
+            %a{:href => "/show/#{encdigest}?digest=#{digest}&filename=#{name}"}
+              = name
             - if tripcode
               %br
               Tripcode:

@@ -33,7 +33,7 @@
         - files.each do |file|
           - filename = "encrypted-#{file[0, 8]}"
           %div
-            %a.files{:href => "/download/#{file}", :id => file}= filename
+            %a.files{:href => "/show/#{file}", :id => file}= filename
     %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
     %script{:type => 'text/javascript', :src => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'}
     %script{:type => 'text/javascript', :src => '/index.js'}
