@@ -59,14 +59,20 @@
           %br
           %label STEP 2
           %br
-          %input{:type => 'submit', :value => 'Upload',
+          %button{:type => 'submit',
               :class => 'btn btn-lg btn-default'}
+            %span{:class => 'glyphicon glyphicon-cloud-upload',
+                'aria-hidden' => true}
+            Upload
           %br
           %br
           %label Tripcode Tag (Option)
           %br
-          \#
-          %input{:type => 'input', :name => 'tripkey'}
+          %div{:class => 'input-group'}
+            %span{:class => 'input-group-addon', :id => 'basic-addon1'} #
+            %input{:type => :text, :class => 'form-control',
+                :placeholder => 'Trip Key',
+                'aria-describedby' => 'basic-addon1', :name => 'tripkey'}
         %hr
         %h1 Upload Text
         %form{:action => '/uploadtext', :method => 'post',
@@ -77,14 +83,20 @@
           %br
           %textarea{:rows => 10, :cols => 40, :name => 'text'}
           %br
-          %input{:type => 'submit', :value => 'Upload',
+          %button{:type => 'submit',
               :class => 'btn btn-lg btn-default'}
+            %span{:class => 'glyphicon glyphicon-cloud-upload',
+                'aria-hidden' => true}
+            Upload
           %br
           %br
           %label Tripcode Tag (Option)
           %br
-          \#
-          %input{:type => 'input', :name => 'tripkey'}
+          %div{:class => 'input-group'}
+            %span{:class => 'input-group-addon', :id => 'basic-addon2'} #
+            %input{:type => :text, :class => 'form-control',
+                :placeholder => 'Trip Key',
+                'aria-describedby' => 'basic-addon2', :name => 'tripkey'}
         %hr
         %h1 Download
         #{recentfiles.size} / #{filemax} files in FIFO.
