@@ -3,12 +3,37 @@
     %title #{tripcode} - Online Storage - Iceberg
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
-    %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
-    %script{:type => 'text/javascript', :src => '/index.js'}
+    %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css", :rel => "stylesheet"}
+    %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css", :rel => "stylesheet"}
+    %link{:href => "/starter-template.css", :rel => "stylesheet"}
   %body
-    %h1 Tripcode #{tripcode}
-    %p Fund: #{fund} MiB/Round (Under development)
-    - files.each do |file|
-      - filename = "encrypted-#{file[0, 8]}"
-      %a.files{:href => "/download/#{file}", :id => file}= filename
-      %br
+    %nav{:class => "navbar navbar-inverse navbar-fixed-top"}
+      %div.container
+        %div.navbar-header
+          %button{:type => "button", :class => "navbar-toggle collapsed",
+              "data-toggle" => "collapse", "data-target" => "#navbar",
+              "aria-expanded" => "false", "aria-controls" => "navbar"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "/"} Online Storage - Iceberg
+        %div#navbar{:class => "collapse navbar-collapse"}
+          %ul{:class => "nav navbar-nav"}
+            %li.active
+              %a{:href => "/"} Home
+            %li
+              %a{:href => 'https://github.com/ohac/iceberg'} Source
+            %li
+              %a{:href => 'https://github.com/ohac/iceberg/wiki'} Roadmap
+    %div.container
+      %div.starter-template
+        %h1 Tripcode #{tripcode}
+        %p Fund: #{fund} MiB/Round (Under development)
+        - files.each do |file|
+          - filename = "encrypted-#{file[0, 8]}"
+          %div
+            %a.files{:href => "/download/#{file}", :id => file}= filename
+    %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
+    %script{:type => 'text/javascript', :src => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'}
+    %script{:type => 'text/javascript', :src => '/index.js'}
