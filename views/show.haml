@@ -9,17 +9,19 @@
   - dllink = "/download/#{url}"
   %head
     %title #{filename} - Online Storage - Iceberg
-    %meta{:property => 'twitter:site', :content => 'ohac'}
     %meta{:name => 'twitter:title', :content => filename}
+    - summary = true
     - case filename
       - when /\.jpg$/, /\.gif$/, /\.png$/
-        %meta{:property => 'twitter:card', :content => 'photo'}
-        %meta{:name => 'twitter:image', :content => "#{hostport}#{dllink}"}
-        %meta{:name => 'twitter:url', :content => request.url}
-      - else
-        %meta{:property => 'twitter:card', :content => 'summary'}
-        %meta{:name => 'twitter:description',
-            :content => 'Store and share files on Iceberg.'}
+        - if filesize < 1024 * 1024
+          %meta{:property => 'twitter:card', :content => 'photo'}
+          %meta{:name => 'twitter:image', :content => "#{hostport}#{dllink}"}
+          %meta{:name => 'twitter:url', :content => request.url}
+          - summary = false
+    - if summary
+      %meta{:property => 'twitter:card', :content => 'summary'}
+      %meta{:name => 'twitter:description',
+          :content => 'Store and share files on Iceberg.'}
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
     %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css", :rel => "stylesheet"}

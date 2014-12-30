@@ -127,8 +127,11 @@ get '/show/:name' do
   name = params[:name]
   filename = params[:filename]
   hexdigest = params[:digest]
+  download = SETTING['local']['download']
+  file = File.join(download, name)
+  filesize = File.size(file)
   haml :show, :locals => {:name => name, :filename => filename,
-      :hexdigest => hexdigest}
+      :hexdigest => hexdigest, :filesize => filesize}
 end
 
 get '/download/:name' do
