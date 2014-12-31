@@ -1,0 +1,9 @@
+%li.active
+  %a{:href => "#"} Home
+%li
+  - demourl = SETTING['local']['demourl'] || '#'
+  %a{:href => demourl} Demo
+%li
+  %a{:href => 'https://github.com/ohac/iceberg'} Source
+%li
+  %a{:href => 'https://github.com/ohac/iceberg/wiki'} Roadmap
