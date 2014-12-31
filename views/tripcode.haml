@@ -29,8 +29,9 @@
               %a{:href => 'https://github.com/ohac/iceberg/wiki'} Roadmap
     %div.container
       %div.starter-template
-        %h1 Tripcode #{tripcode}
-        %p Fund: #{fund} MiB/Round (Under development)
+        %h1#maintitle Untitled Tag
+        %div Tripcode: #{tripcode}
+        %br
         - files.each do |file|
           - filename = "encrypted-#{file[0, 8]}"
           %div
@@ -45,14 +46,15 @@
         %br
         %div{:class => 'input-group'}
           %div{:class => 'input-group-btn'}
-            %button{:type => 'button',
+            %button#settagname{:type => 'button',
                 :class => 'btn btn-default'}
               %span{:class => 'glyphicon glyphicon-tag',
                 'aria-hidden' => true}
               Set
-          %input{:type => 'text', :class => 'form-control',
+          %input#tagname{:type => 'text', :class => 'form-control',
               :placeholder => 'Tag Name', 'aria-label' => 'Set Tag Name'}
         %hr
+        %p Fund: #{fund} MiB/Round (Under development)
         %label Tripcode Tag
         %br
         %div{:class => 'input-group'}

@@ -37,10 +37,16 @@ $(function(){
     var y = $(x);
     var id = y.attr('id');
     var tripcodelist = localStorage.getItem('tripcodelist');
+    var star = '<span class="glyphicon glyphicon-star" aria-hidden="true">' +
+        '</span>';
+    var html = y.html();
+    var tagname = localStorage.getItem(id + ':title');
+    tagname = tagname ? tagname : ('Untitled Tag ' + id);
+    html = tagname;
     if (tripcodelist && tripcodelist.indexOf(id) >= 0) {
-      y.html(y.html() +
-          '<span class="glyphicon glyphicon-star" aria-hidden="true"></span>');
+      html = star + html;
     }
+    y.html(html);
   });
   $('#showkeys').click(function () {
     var metadata = ''

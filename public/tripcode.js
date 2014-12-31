@@ -4,6 +4,7 @@ $(function(){
   var tagname = localStorage.getItem(tripcode + ':title');
   if (tagname) {
     document.title = tagname + ' - ' + title;
+    $('#maintitle').text(tagname);
   }
   var tripcodelist = localStorage.getItem('tripcodelist');
   if (tripcodelist && tripcodelist.indexOf(tripcode) >= 0) {
@@ -32,6 +33,10 @@ $(function(){
     }
     localStorage.setItem('tripcodelist', tripcodelist);
     $('#star').text(starred ? 'Star' : 'Unstar');
+  });
+  $('#settagname').click(function() {
+    localStorage.setItem(tripcode + ':title', $('#tagname').val());
+    location.reload();
   });
   $('.files').each(function(i, x) {
     var y = $(x);
