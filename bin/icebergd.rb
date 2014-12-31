@@ -134,53 +134,36 @@ get '/show/:name' do
       :hexdigest => hexdigest, :filesize => filesize}
 end
 
-get '/download/:name' do
-  name = params[:name]
-  filename = params[:filename]
-  ctype, disp = case filename
-    when /\.jpg$/ ; ['image/jpeg', 'inline']
-    when /\.png$/ ; ['image/png', 'inline']
-    when /\.gif$/ ; ['image/gif', 'inline']
-    when /\.mp3$/ ; ['audio/mpeg', 'inline']
-    when /\.ogg$/ ; ['audio/ogg', 'inline']
-    when /\.flac$/ ; ['audio/flac', 'inline']
-    when /\.webm$/ ; ['video/webm', 'inline']
-    when /\.txt$/ ; ['text/plain', 'inline']
-    else ['application/octet-stream', 'attachment']
-  end
-  if ctype == 'text/plain'
-    content_type ctype, :charset => 'utf-8'
-  else
-    content_type ctype
-  end
-  if filename
-    response.headers['Content-Disposition'] =
-        "#{disp}; filename=\"#{filename}\""
-  end
-  download = SETTING['local']['download']
-  hexdigest = params[:digest]
-  if hexdigest
-    digest = [hexdigest].pack('H*')
-    cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).decrypt
-    cipher.key = digest[0, 16]
-    cipher.iv = digest[4, 16]
-  end
-
-  file = File.join(download, name)
-  stream do |out|
-    begin
-      File.open(file, 'rb') do |fd|
-        loop do
-          data = fd.read(32 * 1024)
-          break unless data
-          data = cipher.update(data) if cipher
-          out << data
-          sleep 0.1
+['/download/:name', '/api/v1/download/:name'].each do |path|
+  get path do
+    name = params[:name]
+    filename = params[:filename]
+    hexdigest = params[:digest]
+    ctype, disp, file, cipher = Iceberg.download(name, filename, hexdigest)
+    if ctype == 'text/plain'
+      content_type ctype, :charset => 'utf-8'
+    else
+      content_type ctype
+    end
+    if filename
+      response.headers['Content-Disposition'] =
+          "#{disp}; filename=\"#{filename}\""
+    end
+    stream do |out|
+      begin
+        File.open(file, 'rb') do |fd|
+          loop do
+            data = fd.read(32 * 1024)
+            break unless data
+            data = cipher.update(data) if cipher
+            out << data
+            sleep 0.1
+          end
+          out << cipher.final if cipher
         end
-        out << cipher.final if cipher
-      end
-    rescue => x
+      rescue => x
 p x
+      end
     end
   end
 end

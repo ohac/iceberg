@@ -25,6 +25,8 @@ example
     key=3F786850E387550FDAB836ED7E6DC881
     iv =E387550FDAB836ED7E6DC881DE23001B
     Zaf76KVeOWrs4UEWGqSReg==
+    $ curl -s http://localhost:4567/api/v1/download/5618577aa4e6dc87931719ea26afbd7e886cb4e2 | base64
+    Zaf76KVeOWrs4UEWGqSReg==
 
 ## Copyright and license
 

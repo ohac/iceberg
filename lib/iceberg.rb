@@ -98,4 +98,27 @@ class Iceberg
     }
   end
 
+  def self.download(name, filename, hexdigest)
+    ctype, disp = case filename
+      when /\.jpg$/ ; ['image/jpeg', 'inline']
+      when /\.png$/ ; ['image/png', 'inline']
+      when /\.gif$/ ; ['image/gif', 'inline']
+      when /\.mp3$/ ; ['audio/mpeg', 'inline']
+      when /\.ogg$/ ; ['audio/ogg', 'inline']
+      when /\.flac$/ ; ['audio/flac', 'inline']
+      when /\.webm$/ ; ['video/webm', 'inline']
+      when /\.txt$/ ; ['text/plain', 'inline']
+      else ['application/octet-stream', 'attachment']
+    end
+    download = SETTING['local']['download']
+    if hexdigest
+      digest = [hexdigest].pack('H*')
+      cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).decrypt
+      cipher.key = digest[0, 16]
+      cipher.iv = digest[4, 16]
+    end
+    file = File.join(download, name)
+    [ctype, disp, file, cipher]
+  end
+
 end
