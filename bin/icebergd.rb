@@ -63,11 +63,23 @@ get '/' do
   tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET)
   uploaded = session[:uploaded]
   session[:uploaded] = nil
-  filemax = SETTING['local']['filemax']
   maxfilesize = SETTING['local']['maxfilesize']
   haml :index, :locals => { :recentfiles => recentfiles,
       :uploaded => uploaded, :tripcodelist => tripcodelist,
       :filemax => filemax, :maxfilesize => maxfilesize }
+end
+
+get '/api/v1/recentfiles' do
+  filemax = SETTING['local']['filemax']
+  recentfiles = @@redis.lrange(IBDB_RECENT, 0, filemax)
+  rv = { :recentfiles => recentfiles, :filemax => filemax }
+  rv.to_json + "\n"
+end
+
+get '/api/v1/tripcodelist' do
+  tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET)
+  rv = { :tripcodelist => tripcodelist }
+  rv.to_json + "\n"
 end
 
 post '/upload' do

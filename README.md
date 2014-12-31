@@ -27,6 +27,10 @@ example
     Zaf76KVeOWrs4UEWGqSReg==
     $ curl -s http://localhost:4567/api/v1/download/5618577aa4e6dc87931719ea26afbd7e886cb4e2 | base64
     Zaf76KVeOWrs4UEWGqSReg==
+    $ curl -s http://localhost:4567/api/v1/recentfiles
+    {"recentfiles":["5618577aa4e6dc87931719ea26afbd7e886cb4e2"],"filemax":200}
+    $ curl -s http://localhost:4567/api/v1/tripcodelist
+    {"tripcodelist":["hvfkN.qlp.zh"]}
 
 ## Copyright and license
 
