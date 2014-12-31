@@ -18,6 +18,9 @@ unless File.exist?(SETTING_FILE)
         'download' => File.join(SETTING_DIR, 'download'),
         'filemax' => 200,
         'maxfilesize' => 20 * 1024 * 1024, # 20 MiB
+        'demourl' => '/show/3f636ca05f41c4a6dfd5f8cbc7a9dc0125b9a9b7?' +
+            'digest=cafcc2df4c3998ba5ab94b5262ef3369502488f7&' +
+            'filename=jBRA8.webm' # Big Buck Bunny
       },
     }
     fd.puts(YAML.dump(setting))

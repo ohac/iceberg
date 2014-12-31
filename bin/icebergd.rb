@@ -64,9 +64,10 @@ get '/' do
   uploaded = session[:uploaded]
   session[:uploaded] = nil
   maxfilesize = SETTING['local']['maxfilesize']
+  demourl = SETTING['local']['demourl'] || '#'
   haml :index, :locals => { :recentfiles => recentfiles,
       :uploaded => uploaded, :tripcodelist => tripcodelist,
-      :filemax => filemax, :maxfilesize => maxfilesize }
+      :filemax => filemax, :maxfilesize => maxfilesize, :demourl => demourl }
 end
 
 get '/api/v1/recentfiles' do
