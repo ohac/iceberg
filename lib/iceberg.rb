@@ -36,14 +36,47 @@ IBDB_TRIPCODE_FUND = 'iceberg:tripcode:fund:'
 
 class Iceberg
 
-  def self.upload(path, tripkey, filesize, filemax, text = nil)
+  def self.uploadimpl1
     download = SETTING['local']['download']
     FileUtils.mkdir download unless File.exist?(download)
+    download
+  end
+
+  def self.uploadimpl2(filemax, encdigest)
+    n = @@redis.lpush(IBDB_RECENT, encdigest)
+    tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET) || []
+    while n.size > filemax
+      n = @@redis.llen(IBDB_RECENT)
+      dropdigest = @@redis.rpop(IBDB_RECENT)
+      dropfile = File.join(download, dropdigest)
+      dropsize = File.size(dropfile) / (1024 * 1024) # MiB
+      dropsize = 1 if dropsize <= 0 # TODO handle under 1 MiB
+      found = false
+      tripcodelist.each do |tripcode|
+        next unless @@redis.sismember(IBDB_TRIPCODE + tripcode, dropdigest)
+        v = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
+        if v.to_i > 0
+          @@redis.decrby(IBDB_TRIPCODE_FUND + tripcode, dropsize)
+          found = true
+          break
+        end
+      end
+      unless found
+        FileUtils.rm_f(dropfile)
+        break
+      end
+      @@redis.lpush(IBDB_RECENT, dropdigest)
+    end
+  end
+
+  def self.upload(path, tripkey, filesize, filemax, text = nil)
+    download = uploadimpl1()
     tripkey = nil if tripkey.empty?
     if path
       raise 'size over' if File.new(path).size > filesize
       alldata = File.open(path, 'rb'){|fd| fd.read}
     else
+      raise 'size over' if text.size > filesize # TODO convert to binary size
       alldata = text
     end
     digest = Digest::SHA1.digest(alldata)
@@ -56,30 +89,7 @@ class Iceberg
     dest = File.join(download, encdigest)
     unless File.exist?(dest)
       File.open(dest, 'wb'){|fd| fd.write(encdata)}
-      n = @@redis.lpush(IBDB_RECENT, encdigest)
-      tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET) || []
-      while n.size > filemax
-        n = @@redis.llen(IBDB_RECENT)
-        dropdigest = @@redis.rpop(IBDB_RECENT)
-        dropfile = File.join(download, dropdigest)
-        dropsize = File.size(dropfile) / (1024 * 1024) # MiB
-        dropsize = 1 if dropsize <= 0
-        found = false
-        tripcodelist.each do |tripcode|
-          next unless @@redis.sismember(IBDB_TRIPCODE + tripcode, dropdigest)
-          v = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
-          if v.to_i > 0
-            @@redis.decrby(IBDB_TRIPCODE_FUND + tripcode, dropsize)
-            found = true
-            break
-          end
-        end
-        unless found
-          FileUtils.rm_f(dropfile)
-          break
-        end
-        @@redis.lpush(IBDB_RECENT, dropdigest)
-      end
+      uploadimpl2(filemax, encdigest)
     end
     if tripkey
       tripcode = Base64.encode64(Digest::SHA1.digest(tripkey))[0, 12]
@@ -98,6 +108,22 @@ class Iceberg
       :digest => hexdigest,
       :encdigest => encdigest,
       :tripcode => tripcode,
+    }
+  end
+
+  def self.uploadraw(path, filesize, filemax)
+    download = uploadimpl1()
+    raise 'size over' if File.new(path).size > filesize
+    encdata = File.open(path, 'rb'){|fd| fd.read}
+    encdigest = Digest::SHA1.hexdigest(encdata)
+    # TODO check filename
+    dest = File.join(download, encdigest)
+    unless File.exist?(dest)
+      # TODO move!
+      File.open(dest, 'wb'){|fd| fd.write(encdata)}
+      uploadimpl2(filemax, encdigest)
+    end
+    {
     }
   end
 

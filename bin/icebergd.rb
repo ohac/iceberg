@@ -117,6 +117,22 @@ post '/api/v1/upload' do
   rv.to_json + "\n"
 end
 
+post '/api/v1/uploadraw' do
+  begin
+    f = params[:file]
+    raise if f.nil?
+    path = f[:tempfile].path
+    origname = f[:filename] # TODO check SHA-1
+    filemax = SETTING['local']['filemax']
+    maxfilesize = SETTING['local']['maxfilesize']
+    rv = Iceberg.uploadraw(path, maxfilesize, filemax)
+  rescue => x
+    rv = { :error => x.to_s }
+  end
+  content_type CONTENT_TYPES[:js], :charset => 'utf-8'
+  rv.to_json + "\n"
+end
+
 post '/uploadtext' do
   # TODO
   text = params[:text]
