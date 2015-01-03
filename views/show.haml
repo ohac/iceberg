@@ -1,8 +1,7 @@
 %html
   - filename = filename || 'Encrypted File'
   - encdigest = request.path_info.split('/').last
-  - hostport = request.scheme + '://' + request.host
-  - port = request.port
+  -# port = request.port
   -# TODO reverse proxy setting: http -> https
   -# hostport = request.scheme + '://' + request.host
   - hostport = 'https://' + request.host
@@ -25,8 +24,8 @@
         - when /\.mp3$/
           %meta{:property => 'twitter:card', :content => 'player'}
           %meta{:name => 'twitter:player', :content => "#{hostport}#{ctlink}"}
-          %meta{:name => 'twitter:player:width', :content => 480}
-          %meta{:name => 'twitter:player:height', :content => 480}
+          %meta{:name => 'twitter:player:width', :content => 300}
+          %meta{:name => 'twitter:player:height', :content => 32}
           -# TODO max 262x262
           %meta{:name => 'twitter:image', :content => "#{hostport}/example.png"}
           - summary = false
