@@ -168,6 +168,7 @@ end
     filename = params[:filename]
     hexdigest = params[:digest]
     ctype, disp, file, cipher = Iceberg.download(name, filename, hexdigest)
+    error 404 unless File.exist?(file)
     if ctype == 'text/plain'
       content_type ctype, :charset => 'utf-8'
     else
