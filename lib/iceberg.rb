@@ -62,7 +62,8 @@ class Iceberg
         end
       end
       unless found
-        FileUtils.rm_f(dropfile)
+        # TODO do not remove small files (for now)
+        FileUtils.rm_f(dropfile) if File.size(dropfile) > 64 * 1024 # 64 KiB
         break
       end
       @@redis.lpush(IBDB_RECENT, dropdigest)
