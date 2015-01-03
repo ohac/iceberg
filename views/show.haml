@@ -9,19 +9,20 @@
   - dllink = "/download/#{url}"
   %head
     %title #{filename} - Online Storage - Iceberg
-    %meta{:name => 'twitter:title', :content => filename}
-    - summary = true
-    - case filename
-      - when /\.jpg$/, /\.gif$/, /\.png$/
-        - if filesize < 1024 * 1024
-          %meta{:property => 'twitter:card', :content => 'photo'}
-          %meta{:name => 'twitter:image', :content => "#{hostport}#{dllink}"}
-          %meta{:name => 'twitter:url', :content => request.url}
-          - summary = false
-    - if summary
-      %meta{:property => 'twitter:card', :content => 'summary'}
-      %meta{:name => 'twitter:description',
-          :content => 'Store and share files on Iceberg.'}
+    - if filesize
+      %meta{:name => 'twitter:title', :content => filename}
+      - summary = true
+      - case filename
+        - when /\.jpg$/, /\.gif$/, /\.png$/
+          - if filesize < 1024 * 1024
+            %meta{:property => 'twitter:card', :content => 'photo'}
+            %meta{:name => 'twitter:image', :content => "#{hostport}#{dllink}"}
+            %meta{:name => 'twitter:url', :content => request.url}
+            - summary = false
+      - if summary
+        %meta{:property => 'twitter:card', :content => 'summary'}
+        %meta{:name => 'twitter:description',
+            :content => 'Store and share files on Iceberg.'}
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
     %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css", :rel => "stylesheet"}
@@ -48,22 +49,25 @@
           %input#name{:type => :hidden, :value => filename}
           %input#digest{:type => :hidden, :value => hexdigest}
           %input#encdigest{:type => :hidden, :value => encdigest}
-        - case filename
-          - when /\.txt$/
-            %iframe{:src => dllink}
-            %hr
-          - when /\.webm$/
-            %video{:width => 640, :height => 360, :controls => :controls}
-              %source{:src => dllink}
-            %hr
-          - when /\.jpg$/, /\.gif$/, /\.png$/
-            %img{:src => dllink}
-            %hr
-          - when /\.mp3$/, /\.ogg$/, /\.flac$/
-            %audio{:src => dllink, :controls => :controls}
-            %hr
-        %a{:href => dllink, :class => 'btn btn-default btn-lg'}
-          %span{:class => 'glyphicon glyphicon-cloud-download'} Download
+        - if filesize
+          - case filename
+            - when /\.txt$/
+              %iframe{:src => dllink}
+              %hr
+            - when /\.webm$/
+              %video{:width => 640, :height => 360, :controls => :controls}
+                %source{:src => dllink}
+              %hr
+            - when /\.jpg$/, /\.gif$/, /\.png$/
+              %img{:src => dllink}
+              %hr
+            - when /\.mp3$/, /\.ogg$/, /\.flac$/
+              %audio{:src => dllink, :controls => :controls}
+              %hr
+          %a{:href => dllink, :class => 'btn btn-default btn-lg'}
+            %span{:class => 'glyphicon glyphicon-cloud-download'} Download
+        - else
+          %p File not found
         %hr
         %label Share URL:
         %textarea{:rows => 2, :class => 'form-control'}

@@ -157,7 +157,7 @@ get '/show/:name' do
   hexdigest = params[:digest]
   download = SETTING['local']['download']
   file = File.join(download, name)
-  filesize = File.size(file)
+  filesize = File.size(file) if File.exist?(file)
   haml :show, :locals => {:name => name, :filename => filename,
       :hexdigest => hexdigest, :filesize => filesize}
 end
