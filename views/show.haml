@@ -3,10 +3,13 @@
   - encdigest = request.path_info.split('/').last
   - hostport = request.scheme + '://' + request.host
   - port = request.port
-  - hostport += ":#{port}" if port != 80
+  -# TODO reverse proxy setting: http -> https
+  -# hostport = request.scheme + '://' + request.host
+  - hostport = 'https://' + request.host
   - params = hexdigest ? "?digest=#{hexdigest}&filename=#{filename}" : ''
   - url = "#{name}#{params}"
   - dllink = "/download/#{url}"
+  - ctlink = "/container/#{url}"
   %head
     %title #{filename} - Online Storage - Iceberg
     - if filesize
@@ -19,6 +22,14 @@
             %meta{:name => 'twitter:image', :content => "#{hostport}#{dllink}"}
             %meta{:name => 'twitter:url', :content => request.url}
             - summary = false
+        - when /\.mp3$/
+          %meta{:property => 'twitter:card', :content => 'player'}
+          %meta{:name => 'twitter:player', :content => "#{hostport}#{ctlink}"}
+          %meta{:name => 'twitter:player:width', :content => 480}
+          %meta{:name => 'twitter:player:height', :content => 480}
+          -# TODO max 262x262
+          %meta{:name => 'twitter:image', :content => "#{hostport}/example.png"}
+          - summary = false
       - if summary
         %meta{:property => 'twitter:card', :content => 'summary'}
         %meta{:name => 'twitter:description',

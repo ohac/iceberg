@@ -162,6 +162,12 @@ get '/show/:name' do
       :hexdigest => hexdigest, :filesize => filesize}
 end
 
+# TODO for Twitter Cards
+get '/container/:name' do
+  name = params[:name]
+  haml :container, :locals => { :name => name }
+end
+
 ['/download/:name', '/api/v1/download/:name'].each do |path|
   get path do
     name = params[:name]
