@@ -54,7 +54,14 @@ before do
   response.headers['Cache-Control'] = 'no-cache'
 end
 
-@@redis = Redis.new
+@@redis = if ENV['DB_PORT_6379_TCP_PORT']
+    host = ENV['DB_PORT_6379_TCP_ADDR']
+    port = ENV['DB_PORT_6379_TCP_PORT'].to_i
+    Redis.new(:host => host, :port => port)
+  else
+    Redis.new
+  end
+
 @@algorithm = 'AES-128-CBC'
 
 get '/' do
