@@ -20,7 +20,8 @@ CMD rackup -p 4567 -o 0.0.0.0
 # Run (standalone):
 # docker run --name redis -d \
 #   -v /somewhere/redis:/data redis redis-server --appendonly yes
-# docker run --name iceberg --link redis:db -p 4567:4567 -d ohac/iceberg
+# docker run --name iceberg -d --link redis:db -p 4567:4567 \
+#   -v /somewhere/iceberg:/root/.iceberg ohac/iceberg
 #
 # Run (with nginx):
 # (setup nginx.conf, server.crt and server.key)
@@ -29,4 +30,5 @@ CMD rackup -p 4567 -o 0.0.0.0
 #   -v /somewhere/ssl:/data:ro nginx
 # docker run --name redis -d --net container:nginx \
 #   -v /somewhere/redis:/data redis redis-server --appendonly yes
-# docker run --name iceberg --net container:nginx -d ohac/iceberg
+# docker run --name iceberg -d --net container:nginx \
+#   -v /somewhere/iceberg:/root/.iceberg ohac/iceberg
