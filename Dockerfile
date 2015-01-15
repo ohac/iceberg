@@ -13,6 +13,20 @@ RUN apt-get install -y make ruby-dev g++
 RUN gem install thin
 WORKDIR /iceberg
 CMD rackup -p 4567 -o 0.0.0.0
+
+# Build:
 # docker build -t ohac/iceberg .
-# docker run --link redis:db --name iceberg -p 4567:4567 -d ohac/iceberg
-# docker run --link redis:db --name iceberg -p 4567:4567 -i -t --rm ohac/iceberg bash
+#
+# Run (standalone):
+# docker run --name redis -d \
+#   -v /somewhere/redis:/data redis redis-server --appendonly yes
+# docker run --name iceberg --link redis:db -p 4567:4567 -d ohac/iceberg
+#
+# Run (with nginx):
+# (setup nginx.conf, server.crt and server.key)
+# docker run --name nginx -d -p 443:443 -p 80:80 \
+#   -v /somewhere/nginx.conf:/etc/nginx/nginx.conf:ro \
+#   -v /somewhere/ssl:/data:ro nginx
+# docker run --name redis -d --net container:nginx \
+#   -v /somewhere/redis:/data redis redis-server --appendonly yes
+# docker run --name iceberg --net container:nginx -d ohac/iceberg
