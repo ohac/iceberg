@@ -1,10 +1,12 @@
+!!! 5
 %html
   %head
     %title #{tripcode} - Online Storage - Iceberg
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
-    %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css", :rel => "stylesheet"}
-    %link{:href => "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css", :rel => "stylesheet"}
+    - cdn = 'http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1'
+    %link{:href => "#{cdn}/css/bootstrap.min.css", :rel => "stylesheet"}
+    %link{:href => "#{cdn}/css/bootstrap-theme.min.css", :rel => "stylesheet"}
     %link{:href => "/starter-template.css", :rel => "stylesheet"}
   %body
     %input#tripcode{:type => :hidden, :value => tripcode}
@@ -50,5 +52,5 @@
         %hr
         %p Fund: #{fund} MiB/Round (Under development)
     %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
-    %script{:type => 'text/javascript', :src => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'}
+    %script{:type => 'text/javascript', :src => "#{cdn}/js/bootstrap.min.js"}
     %script{:type => 'text/javascript', :src => '/tripcode.js'}
