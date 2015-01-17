@@ -54,18 +54,19 @@
               %a{:href => "/tripcode/#{tripcode}"}= tripcode
               %input#tripcode{:type => :hidden, :value => tripcode}
 
-        %div{:id => "myCarousel", :class => "carousel slide", 'data-ride' => "carousel", 'data-interval' => 20000}
+        %div{:id => "myCarousel", :class => "carousel slide", 'data-ride' => "carousel", 'data-interval' => 600000}
           %ol{:class => "carousel-indicators"}
             %li{'data-target' => "#myCarousel", 'data-slide-to' => 0, :class => "active"}
             %li{'data-target' => "#myCarousel", 'data-slide-to' => 1}
             %li{'data-target' => "#myCarousel", 'data-slide-to' => 2}
+            %li{'data-target' => "#myCarousel", 'data-slide-to' => 4}
           %div{:class => "carousel-inner", :role => "listbox"}
             %div{:class => "item active"}
               %img{:src => "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", :alt => "First slide"}
               %div{:class => "container"}
                 %div{:class => "carousel-caption"}
                   %h1 Your stuff, anywhere
-                  %p You can share pictures, stories, designs, drawings, recordings, videos – anything.
+                  %p You can share pictures, recordings, videos – anything.
                   %p You can quickly share URL to view, download, and collaborate on all the files you want - no email attachment needed.
                   %p
                     - demourl = SETTING['local']['demourl'] || '#'
@@ -76,16 +77,23 @@
                 %div{:class => "carousel-caption"}
                   %h1 Safe and secure
                   %p Full SSL communication.
-                  %p Iceberg secures your files with 128-bit AES encryption.
                   %p Everything's automatically private, so you control who sees what.
-                  %p Server does not store your private encryption key.
+                  %p Server does not store your AES encryption key.
                   %p Storing it into your browser's local storage.
             %div{:class => "item"}
               %img{:src => "data:image/gif;base64,R0lGODlhAQABAIAAAFVVVQAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", :alt => "Third slide"}
               %div{:class => "container"}
                 %div{:class => "carousel-caption"}
                   %h1 Open source and decentralized
-                  %p Iceberg is open source software. You can improve this software.
+                  %p Iceberg is open source software.
+                  %p You can improve this software. Run anywhere.
+                  %p
+                    %a{:class => "btn btn-lg btn-primary", :href => 'https://github.com/ohac/iceberg'} GitHub
+            %div{:class => "item"}
+              %img{:src => "data:image/gif;base64,R0lGODlhAQABAIAAAFVVVQAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", :alt => "slide 4"}
+              %div{:class => "container"}
+                %div{:class => "carousel-caption"}
+                  %h1 Decentralized
                   %p It is possible to download and upload encrypted files via API.
                   %p Anybody can duplicate and re-upload files.
                   %p
