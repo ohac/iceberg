@@ -7,9 +7,8 @@ RUN apt-get install -y redis-tools git ruby
 RUN gem install redis
 RUN gem install sinatra
 RUN gem install haml
-RUN gem install aws-sdk
 RUN apt-get install -y make ruby-dev g++
-RUN gem install thin
+RUN gem install aws-sdk thin
 RUN git clone https://github.com/ohac/iceberg.git
 RUN \
   mkdir -p /iceberg/public/css && \
