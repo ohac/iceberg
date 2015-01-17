@@ -214,6 +214,11 @@
                 %a.tripcodelist{:href => "/tripcode/#{tripcode}",
                     :id => tripcode}= tripcode
         %hr
+        %h1 Recent Peers
+        - salt = SETTING['local']['salt'] || ''
+        - recentpeers.each do |digest, info|
+          %p #{digest} (#{info})
+        %hr
         %h1 Cryptographic Keys
         All keys are stored on your browser's storage.
         %br

@@ -71,9 +71,15 @@ get '/' do
   uploaded = session[:uploaded]
   session[:uploaded] = nil
   maxfilesize = SETTING['local']['maxfilesize']
+  recentpeers = @@redis.lrange(IBDB_RECENT_PEERS, 0, 10).map do |peer|
+    digest = Iceberg.ip2digest(peer)
+    peerinfo = JSON.parse(@@redis.hget(IBDB_PEERS, digest) || '{}')
+    [digest, peerinfo['download']]
+  end
   haml :index, :locals => { :recentfiles => recentfiles,
       :uploaded => uploaded, :tripcodelist => tripcodelist,
-      :filemax => filemax, :maxfilesize => maxfilesize }
+      :filemax => filemax, :maxfilesize => maxfilesize,
+      :recentpeers => recentpeers }
 end
 
 get '/api/v1/recentfiles' do
@@ -206,6 +212,7 @@ end
       rescue => x
 p x
       end
+      Iceberg.recordip(request.ip)
     end
   end
 end

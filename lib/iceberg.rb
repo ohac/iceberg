@@ -22,6 +22,7 @@ unless File.exist?(SETTING_FILE)
             'digest=cafcc2df4c3998ba5ab94b5262ef3369502488f7&' +
             'filename=jBRA8.webm', # Big Buck Bunny
         'cdn' => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1',
+        'salt' => rand.to_s,
       },
     }
     fd.puts(YAML.dump(setting))
@@ -34,6 +35,8 @@ IBDB_RECENT = 'iceberg:recent'
 IBDB_TRIPCODE = 'iceberg:tripcode:'
 IBDB_TRIPCODE_SET = 'iceberg:tripcode:set'
 IBDB_TRIPCODE_FUND = 'iceberg:tripcode:fund:'
+IBDB_RECENT_PEERS = 'iceberg:recentpeers'
+IBDB_PEERS = 'iceberg:peers'
 
 class Iceberg
 
@@ -152,4 +155,20 @@ class Iceberg
     [ctype, disp, file, cipher]
   end
 
+  def self.ip2digest(ip)
+    salt = SETTING['local']['salt'] || ''
+    Digest::SHA1.hexdigest(salt + ip)
+  end
+
+  def self.recordip(ip)
+    info = JSON.parse(@@redis.hget(IBDB_PEERS, ip2digest(ip)) || '{}')
+    info['download'] ||= 0
+    info['download'] += 1
+    @@redis.hset(IBDB_PEERS, ip2digest(ip), info.to_json)
+    @@redis.lrem(IBDB_RECENT_PEERS, 1, ip)
+    @@redis.lpush(IBDB_RECENT_PEERS, ip)
+    if @@redis.llen(IBDB_RECENT_PEERS) > 10 # TODO
+      @@redis.rpop(IBDB_RECENT_PEERS)
+    end
+  end
 end
