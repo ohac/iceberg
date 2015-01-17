@@ -4,7 +4,7 @@
     %title #{tripcode} - Online Storage - Iceberg
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
-    - cdn = 'http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1'
+    - cdn = SETTING['local']['cdn'] || ''
     %link{:href => "#{cdn}/css/bootstrap.min.css", :rel => "stylesheet"}
     %link{:href => "#{cdn}/css/bootstrap-theme.min.css", :rel => "stylesheet"}
     %link{:href => "/starter-template.css", :rel => "stylesheet"}

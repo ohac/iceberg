@@ -11,6 +11,18 @@ RUN git clone https://github.com/ohac/iceberg.git
 EXPOSE 4567
 RUN apt-get install -y make ruby-dev g++
 RUN gem install thin
+RUN \
+  mkdir -p /iceberg/public/css && \
+  mkdir -p /iceberg/public/js && \
+  mkdir -p /iceberg/public/fonts && \
+  cd /iceberg/public/css && \
+  curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css && \
+  curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css && \
+  cd /iceberg/public/js && \
+  curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js && \
+  cd /iceberg/public/fonts && \
+  curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/fonts/glyphicons-halflings-regular.woff && \
+  curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/fonts/glyphicons-halflings-regular.ttf
 WORKDIR /iceberg
 CMD rackup -p 4567 -o 0.0.0.0
 
