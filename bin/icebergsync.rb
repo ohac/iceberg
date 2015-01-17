@@ -72,27 +72,25 @@ class FileHub
     end
   end
 
-  def download(encdigest, path)
+  def download(encdigest, file)
     begin
-      File.open(path, 'wb') do |fd|
-        req = Net::HTTP::Get.new("/api/v1/download/#{encdigest}")
-        gethttp.start do |http|
-          http.request(req) do |res|
-            res.read_body do |chunk|
-              fd.write(chunk)
-            end
+      req = Net::HTTP::Get.new("/api/v1/download/#{encdigest}")
+      gethttp.start do |http|
+        http.request(req) do |res|
+          res.read_body do |chunk|
+            file.write(chunk)
           end
         end
       end
       # TODO check sha1sum
     rescue
-      FileUtils.rm_f(path)
+      file.rm
     end
   end
 
-  def uploadraw(path)
+  def uploadraw(file)
     gethttp.start do |http|
-      encdigest = File.basename(path)
+      encdigest = file.name
       req = Net::HTTP::Post.new('/api/v1/uploadraw')
       boundary = (0...50).map { (65 + rand(26)).chr }.join
       req.set_content_type("multipart/form-data; boundary=#{boundary}")
@@ -103,7 +101,6 @@ Content-Type: application/octet-stream\r
 Content-Transfer-Encoding: binary\r
 \r
 EOF
-      body2 = File.open(path, 'rb')
       body3 = StringIO.new(<<EOF)
 --#{boundary}--\r
 \r
@@ -111,10 +108,10 @@ EOF
 EOF
       mr = MultiReader.new
       mr.add(body1)
-      mr.add(body2)
+      mr.add(file)
       mr.add(body3)
       req.body_stream = mr
-      req.content_length = body1.size + File.size(path) + body3.size
+      req.content_length = body1.size + file.size + body3.size
       res = http.request(req)
       body = res.body
       JSON.parse(body)
@@ -123,22 +120,23 @@ EOF
 
 end
 
-download = SETTING['local']['download']
+b = Iceberg::Storage.new
 hub = FileHub.new('https://box.sighash.info') # TODO
 json = hub.recentfiles()
 recentfiles = json['recentfiles']
 recentfiles.each do |encdigest|
-  file = File.join(download, encdigest)
-  next if File.exist?(file)
+  file = b.getobject(encdigest)
+  next if file.size
   puts "download: #{encdigest}"
   hub.download(encdigest, file)
 end
-dir = Dir.new(download)
-dir.each do |file|
-  next unless file.size == 40
-  unless recentfiles.index(file)
-    puts "upload: #{file}"
+dir = b.dir
+dir.each do |filename|
+  next unless filename.size == 40
+  unless recentfiles.index(filename)
+    puts "upload: #{filename}"
     # TODO check sha1sum before upload
-    json = hub.uploadraw(File.join(download, file))
+    file = b.getobject(filename)
+    json = hub.uploadraw(file)
   end
 end

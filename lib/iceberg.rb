@@ -4,6 +4,7 @@ require 'fileutils'
 require 'redis'
 require 'yaml'
 require 'openssl'
+require 'iceberg/storage'
 
 HOME_DIR = ENV['HOME']
 SETTING_DIR = File.join(HOME_DIR, '.iceberg')
@@ -40,20 +41,15 @@ IBDB_PEERS = 'iceberg:peers'
 
 class Iceberg
 
-  def self.uploadimpl1
-    download = SETTING['local']['download']
-    FileUtils.mkdir download unless File.exist?(download)
-    download
-  end
-
   def self.uploadimpl2(filemax, encdigest)
     n = @@redis.lpush(IBDB_RECENT, encdigest)
     tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET) || []
     while n.size > filemax
       n = @@redis.llen(IBDB_RECENT)
       dropdigest = @@redis.rpop(IBDB_RECENT)
-      dropfile = File.join(download, dropdigest)
-      dropsize = File.size(dropfile) / (1024 * 1024) # MiB
+      b = Iceberg::Storage.new
+      dropfile = b.getobject(dropdigest)
+      dropsize = dropfile.size / (1024 * 1024) # MiB
       dropsize = 1 if dropsize <= 0 # TODO handle under 1 MiB
       found = false
       tripcodelist.each do |tripcode|
@@ -67,7 +63,7 @@ class Iceberg
       end
       unless found
         # TODO do not remove small files (for now)
-        FileUtils.rm_f(dropfile) if File.size(dropfile) > 64 * 1024 # 64 KiB
+        dropfile.rm if dropfile.size > 64 * 1024 # 64 KiB
         break
       end
       @@redis.lpush(IBDB_RECENT, dropdigest)
@@ -75,7 +71,6 @@ class Iceberg
   end
 
   def self.upload(path, tripkey, filesize, filemax, text = nil)
-    download = uploadimpl1()
     tripkey = nil if tripkey.empty?
     if path
       raise 'size over' if File.new(path).size > filesize
@@ -91,9 +86,11 @@ class Iceberg
     cipher.iv = digest[4, 16]
     encdata = cipher.update(alldata) + cipher.final
     encdigest = Digest::SHA1.hexdigest(encdata)
-    dest = File.join(download, encdigest)
-    unless File.exist?(dest)
-      File.open(dest, 'wb'){|fd| fd.write(encdata)}
+
+    b = Iceberg::Storage.new
+    dest = b.getobject(encdigest)
+    unless dest.size
+      dest.write(encdata)
       uploadimpl2(filemax, encdigest)
     end
     if tripkey
@@ -117,15 +114,14 @@ class Iceberg
   end
 
   def self.uploadraw(path, filesize, filemax)
-    download = uploadimpl1()
     raise 'size over' if File.new(path).size > filesize
-    encdata = File.open(path, 'rb'){|fd| fd.read}
+    encdata = File.open(path, 'rb'){|fd| fd.read} # TODO large file
     encdigest = Digest::SHA1.hexdigest(encdata)
     # TODO check filename
-    dest = File.join(download, encdigest)
-    unless File.exist?(dest)
-      # TODO move!
-      File.open(dest, 'wb'){|fd| fd.write(encdata)}
+    b = Iceberg::Storage.new
+    dest = b.getobject(encdigest)
+    unless dest.size
+      dest.write(encdata)
       uploadimpl2(filemax, encdigest)
     end
     {
@@ -144,14 +140,14 @@ class Iceberg
       when /\.txt$/ ; ['text/plain', 'inline']
       else ['application/octet-stream', 'attachment']
     end
-    download = SETTING['local']['download']
     if hexdigest
       digest = [hexdigest].pack('H*')
       cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).decrypt
       cipher.key = digest[0, 16]
       cipher.iv = digest[4, 16]
     end
-    file = File.join(download, name)
+    b = Iceberg::Storage.new
+    file = b.getobject(name)
     [ctype, disp, file, cipher]
   end
 
@@ -171,4 +167,5 @@ class Iceberg
       @@redis.rpop(IBDB_RECENT_PEERS)
     end
   end
+
 end
