@@ -45,4 +45,4 @@ CMD rackup -p 4567 -o 0.0.0.0
 #   -v $PWD/examples/docker/default.conf:/etc/nginx/conf.d/default.conf:ro \
 #   -v $PWD/examples/docker/ssl:/data:ro nginx
 # docker run --name ib -d --net container:bb \
-#   -v $PWD/tmp/iceberg:/root/.iceberg ohac/iceberg
+#   -v $PWD/tmp/iceberg:/.iceberg -v $PWD/tmp/aws:/.aws:ro ohac/iceberg
