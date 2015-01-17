@@ -2,7 +2,7 @@ Iceberg
 
 [![Build Status](https://travis-ci.org/ohac/iceberg.svg?branch=master)](https://travis-ci.org/ohac/iceberg)
 
-Demo site: http://box.sighash.info/
+Demo site: https://box.sighash.info/
 
 example
 
