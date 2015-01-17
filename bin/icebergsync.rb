@@ -10,7 +10,7 @@ self_file =
 $:.unshift(File.dirname(self_file) + "/../lib")
 
 require 'iceberg'
-require 'net/http'
+require 'net/https'
 require 'json'
 require 'fileutils'
 
@@ -52,9 +52,20 @@ class FileHub
     @uri = URI.parse(uri)
   end
 
+  def gethttp
+    http = Net::HTTP.new(@uri.host, @uri.port)
+    if @uri.port == 443
+      http.use_ssl = true
+      #http.ca_file = 'cert.pem' # TODO
+      http.verify_mode = OpenSSL::SSL::VERIFY_PEER
+      http.verify_depth = 5
+    end
+    http
+  end
+
   def recentfiles
-    Net::HTTP.start(@uri.host, @uri.port) do |http|
-      req = Net::HTTP::Get.new('/api/v1/recentfiles')
+    req = Net::HTTP::Get.new('/api/v1/recentfiles')
+    gethttp.start do |http|
       res = http.request(req)
       body = res.body
       JSON.parse(body)
@@ -64,8 +75,8 @@ class FileHub
   def download(encdigest, path)
     begin
       File.open(path, 'wb') do |fd|
-        Net::HTTP.start(@uri.host, @uri.port) do |http|
-          req = Net::HTTP::Get.new("/api/v1/download/#{encdigest}")
+        req = Net::HTTP::Get.new("/api/v1/download/#{encdigest}")
+        gethttp.start do |http|
           http.request(req) do |res|
             res.read_body do |chunk|
               fd.write(chunk)
@@ -73,13 +84,14 @@ class FileHub
           end
         end
       end
+      # TODO check sha1sum
     rescue
       FileUtils.rm_f(path)
     end
   end
 
   def uploadraw(path)
-    Net::HTTP.start(@uri.host, @uri.port) do |http|
+    gethttp.start do |http|
       encdigest = File.basename(path)
       req = Net::HTTP::Post.new('/api/v1/uploadraw')
       boundary = (0...50).map { (65 + rand(26)).chr }.join
@@ -112,7 +124,7 @@ EOF
 end
 
 download = SETTING['local']['download']
-hub = FileHub.new('http://box.sighash.info') # TODO
+hub = FileHub.new('https://box.sighash.info') # TODO
 json = hub.recentfiles()
 recentfiles = json['recentfiles']
 recentfiles.each do |encdigest|
@@ -126,6 +138,7 @@ dir.each do |file|
   next unless file.size == 40
   unless recentfiles.index(file)
     puts "upload: #{file}"
+    # TODO check sha1sum before upload
     json = hub.uploadraw(File.join(download, file))
   end
 end
