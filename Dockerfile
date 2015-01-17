@@ -24,11 +24,12 @@ CMD rackup -p 4567 -o 0.0.0.0
 #   -v /somewhere/iceberg:/root/.iceberg ohac/iceberg
 #
 # Run (with nginx):
-# (setup nginx.conf, server.crt and server.key)
-# docker run --name nginx -d -p 443:443 -p 80:80 \
-#   -v /somewhere/nginx.conf:/etc/nginx/nginx.conf:ro \
-#   -v /somewhere/ssl:/data:ro nginx
-# docker run --name redis -d --net container:nginx \
-#   -v /somewhere/redis:/data redis redis-server --appendonly yes
-# docker run --name iceberg -d --net container:nginx \
-#   -v /somewhere/iceberg:/root/.iceberg ohac/iceberg
+# (setup default.conf, cert.pem and cert.key)
+# docker run --name bb -d -t -p 80:80 -p 443:443 busybox
+# docker run --name rd -d --net container:bb \
+#   -v $PWD/tmp/redis:/data redis redis-server --appendonly yes
+# docker run --name nx -d --net container:bb \
+#   -v $PWD/examples/docker/default.conf:/etc/nginx/conf.d/default.conf:ro \
+#   -v $PWD/examples/docker/ssl:/data:ro nginx
+# docker run --name ib -d --net container:bb \
+#   -v $PWD/tmp/iceberg:/root/.iceberg ohac/iceberg
