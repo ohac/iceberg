@@ -170,8 +170,10 @@ get '/show/:name' do
   hexdigest = params[:digest]
   b = Iceberg::Storage.new
   o = b.getobject(name)
+  ex = o.exists?
+  size = ex ? o.content_length : nil
   haml :show, :locals => {:name => name, :filename => filename,
-      :hexdigest => hexdigest, :filesize => o.content_length,
+      :hexdigest => hexdigest, :filesize => size,
       :exists => o.exists?}
 end
 
