@@ -171,7 +171,8 @@ get '/show/:name' do
   b = Iceberg::Storage.new
   o = b.getobject(name)
   haml :show, :locals => {:name => name, :filename => filename,
-      :hexdigest => hexdigest, :filesize => o.size}
+      :hexdigest => hexdigest, :filesize => o.content_length,
+      :exists => o.exists?}
 end
 
 get '/container/:name' do
@@ -186,7 +187,7 @@ end
     filename = params[:filename]
     hexdigest = params[:digest]
     ctype, disp, file, cipher = Iceberg.download(name, filename, hexdigest)
-    error 404 unless file.size
+    error 404 unless file.exists?
     if ctype == 'text/plain'
       content_type ctype, :charset => 'utf-8'
     else
@@ -198,12 +199,10 @@ end
     end
     stream do |out|
       begin
-        loop do
-          data = file.read(32 * 1024)
-          break unless data
+        file.read do |data|
           data = cipher.update(data) if cipher
           out << data
-          sleep 0.1
+          sleep 0.1 # TODO
         end
         out << cipher.final if cipher
       rescue => x

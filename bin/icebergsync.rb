@@ -30,7 +30,7 @@ class MultiReader
     loop do
       reader = @readers[@cur]
       break unless reader
-      s = reader.read(size)
+      s = reader.read(size) # TODO S3
       if s
         rv += s
         if size
@@ -78,19 +78,20 @@ class FileHub
       gethttp.start do |http|
         http.request(req) do |res|
           res.read_body do |chunk|
-            file.write(chunk)
+            file.write(chunk) # TODO S3
           end
         end
       end
       # TODO check sha1sum
     rescue
-      file.rm
+      file.close rescue nil
+      file.delete
     end
   end
 
   def uploadraw(file)
     gethttp.start do |http|
-      encdigest = file.name
+      encdigest = File.basename(file.key)
       req = Net::HTTP::Post.new('/api/v1/uploadraw')
       boundary = (0...50).map { (65 + rand(26)).chr }.join
       req.set_content_type("multipart/form-data; boundary=#{boundary}")
@@ -111,7 +112,7 @@ EOF
       mr.add(file)
       mr.add(body3)
       req.body_stream = mr
-      req.content_length = body1.size + file.size + body3.size
+      req.content_length = body1.size + file.content_length + body3.size
       res = http.request(req)
       body = res.body
       JSON.parse(body)
@@ -126,9 +127,10 @@ json = hub.recentfiles()
 recentfiles = json['recentfiles']
 recentfiles.each do |encdigest|
   file = b.getobject(encdigest)
-  next if file.size
+  next if file.exists?
   puts "download: #{encdigest}"
   hub.download(encdigest, file)
+  file.close rescue nil # TODO
 end
 dir = b.dir
 dir.each do |filename|
@@ -138,5 +140,6 @@ dir.each do |filename|
     # TODO check sha1sum before upload
     file = b.getobject(filename)
     json = hub.uploadraw(file)
+    file.close rescue nil # TODO
   end
 end

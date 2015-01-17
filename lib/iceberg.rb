@@ -24,6 +24,7 @@ unless File.exist?(SETTING_FILE)
             'filename=jBRA8.webm', # Big Buck Bunny
         'cdn' => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1',
         'salt' => rand.to_s,
+        's3bucket' => false,
       },
     }
     fd.puts(YAML.dump(setting))
@@ -49,7 +50,7 @@ class Iceberg
       dropdigest = @@redis.rpop(IBDB_RECENT)
       b = Iceberg::Storage.new
       dropfile = b.getobject(dropdigest)
-      dropsize = dropfile.size / (1024 * 1024) # MiB
+      dropsize = dropfile.content_length / (1024 * 1024) # MiB
       dropsize = 1 if dropsize <= 0 # TODO handle under 1 MiB
       found = false
       tripcodelist.each do |tripcode|
@@ -63,7 +64,7 @@ class Iceberg
       end
       unless found
         # TODO do not remove small files (for now)
-        dropfile.rm if dropfile.size > 64 * 1024 # 64 KiB
+        dropfile.delete if dropfile.content_length > 64 * 1024 # 64 KiB
         break
       end
       @@redis.lpush(IBDB_RECENT, dropdigest)
@@ -89,8 +90,9 @@ class Iceberg
 
     b = Iceberg::Storage.new
     dest = b.getobject(encdigest)
-    unless dest.size
+    unless dest.exists?
       dest.write(encdata)
+      dest.close rescue nil # TODO
       uploadimpl2(filemax, encdigest)
     end
     if tripkey
@@ -120,8 +122,9 @@ class Iceberg
     # TODO check filename
     b = Iceberg::Storage.new
     dest = b.getobject(encdigest)
-    unless dest.size
+    unless dest.exists?
       dest.write(encdata)
+      dest.close rescue nil # TODO
       uploadimpl2(filemax, encdigest)
     end
     {
