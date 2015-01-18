@@ -1,10 +1,10 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'iceberg/version'
+require 'ibg/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "iceberg"
+  spec.name          = "ibg"
   spec.version       = Iceberg::VERSION
   spec.authors       = ["OHASHI Hideya"]
   spec.email         = ["ohachige@gmail.com"]

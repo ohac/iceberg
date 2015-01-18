@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
-require 'iceberg'
 require 'haml'
 require 'sinatra/base'
 require 'nkf'

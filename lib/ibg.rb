@@ -4,9 +4,9 @@ require 'fileutils'
 require 'redis'
 require 'yaml'
 require 'openssl'
-require "iceberg/version"
-require 'iceberg/storage'
-require 'iceberg/web'
+require "ibg/version"
+require 'ibg/storage'
+require 'ibg/web'
 
 module Iceberg
 

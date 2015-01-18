@@ -1,2 +1,2 @@
-require 'iceberg'
+require 'ibg'
 run Iceberg::WebApp

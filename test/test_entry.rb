@@ -1,4 +1,4 @@
-require 'iceberg'
+require 'ibg'
 
 b = Iceberg::Storage.new
 b.dir
