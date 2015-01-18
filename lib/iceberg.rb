@@ -5,42 +5,43 @@ require 'redis'
 require 'yaml'
 require 'openssl'
 require 'iceberg/storage'
+require "iceberg/version"
 
-HOME_DIR = ENV['HOME']
-SETTING_DIR = File.join(HOME_DIR, '.iceberg')
-SETTING_FILE = File.join(SETTING_DIR, 'settings.yaml')
-unless File.exist?(SETTING_DIR)
-  FileUtils.mkdir SETTING_DIR
-end
-unless File.exist?(SETTING_FILE)
-  open(SETTING_FILE, 'w') do |fd|
-    setting = {
-      'local' => {
-        'download' => File.join(SETTING_DIR, 'download'),
-        'filemax' => 200,
-        'maxfilesize' => 20 * 1024 * 1024, # 20 MiB
-        'demourl' => '/show/3f636ca05f41c4a6dfd5f8cbc7a9dc0125b9a9b7?' +
-            'digest=cafcc2df4c3998ba5ab94b5262ef3369502488f7&' +
-            'filename=jBRA8.webm', # Big Buck Bunny
-        'cdn' => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1',
-        'salt' => rand.to_s,
-        's3bucket' => false,
-      },
-    }
-    fd.puts(YAML.dump(setting))
+module Iceberg
+
+  HOME_DIR = ENV['HOME']
+  SETTING_DIR = File.join(HOME_DIR, '.iceberg')
+  SETTING_FILE = File.join(SETTING_DIR, 'settings.yaml')
+  unless File.exist?(SETTING_DIR)
+    FileUtils.mkdir SETTING_DIR
   end
-end
+  unless File.exist?(SETTING_FILE)
+    open(SETTING_FILE, 'w') do |fd|
+      setting = {
+        'local' => {
+          'download' => File.join(SETTING_DIR, 'download'),
+          'filemax' => 200,
+          'maxfilesize' => 20 * 1024 * 1024, # 20 MiB
+          'demourl' => '/show/3f636ca05f41c4a6dfd5f8cbc7a9dc0125b9a9b7?' +
+              'digest=cafcc2df4c3998ba5ab94b5262ef3369502488f7&' +
+              'filename=jBRA8.webm', # Big Buck Bunny
+          'cdn' => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1',
+          'salt' => rand.to_s,
+          's3bucket' => false,
+        },
+      }
+      fd.puts(YAML.dump(setting))
+    end
+  end
 
-SETTING = YAML.load(File.read(SETTING_FILE))
+  SETTING = YAML.load(File.read(SETTING_FILE))
 
-IBDB_RECENT = 'iceberg:recent'
-IBDB_TRIPCODE = 'iceberg:tripcode:'
-IBDB_TRIPCODE_SET = 'iceberg:tripcode:set'
-IBDB_TRIPCODE_FUND = 'iceberg:tripcode:fund:'
-IBDB_RECENT_PEERS = 'iceberg:recentpeers'
-IBDB_PEERS = 'iceberg:peers'
-
-class Iceberg
+  IBDB_RECENT = 'iceberg:recent'
+  IBDB_TRIPCODE = 'iceberg:tripcode:'
+  IBDB_TRIPCODE_SET = 'iceberg:tripcode:set'
+  IBDB_TRIPCODE_FUND = 'iceberg:tripcode:fund:'
+  IBDB_RECENT_PEERS = 'iceberg:recentpeers'
+  IBDB_PEERS = 'iceberg:peers'
 
   def self.uploadimpl2(filemax, encdigest)
     n = @@redis.lpush(IBDB_RECENT, encdigest)

@@ -1,10 +1,26 @@
-Iceberg
+# Iceberg
 
 [![Build Status](https://travis-ci.org/ohac/iceberg.svg?branch=master)](https://travis-ci.org/ohac/iceberg)
 
 Demo site: https://box.sighash.info/
 
-example
+## Installation
+
+Add this line to your application's Gemfile:
+
+```ruby
+gem 'iceberg'
+```
+
+And then execute:
+
+    $ bundle
+
+Or install it yourself as:
+
+    $ gem install iceberg
+
+## Usage
 
     Server
     $ rackup -s thin -p 4567
@@ -31,6 +47,14 @@ example
     {"recentfiles":["5618577aa4e6dc87931719ea26afbd7e886cb4e2"],"filemax":200}
     $ curl -s http://localhost:4567/api/v1/tripcodelist
     {"tripcodelist":["hvfkN.qlp.zh"]}
+
+## Contributing
+
+1. Fork it ( https://github.com/ohac/iceberg/fork )
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create a new Pull Request
 
 ## Copyright and license
 

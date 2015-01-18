@@ -36,7 +36,7 @@
             :content => 'Store and share files on Iceberg.'}
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
-    - cdn = SETTING['local']['cdn'] || ''
+    - cdn = Iceberg::SETTING['local']['cdn'] || ''
     %link{:href => "#{cdn}/css/bootstrap.min.css", :rel => "stylesheet"}
     %link{:href => "#{cdn}/css/bootstrap-theme.min.css", :rel => "stylesheet"}
     %link{:href => "/starter-template.css", :rel => "stylesheet"}

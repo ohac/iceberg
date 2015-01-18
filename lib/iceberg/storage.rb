@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'aws-sdk'
 
-class Iceberg
+module Iceberg
 
   class Storage
 

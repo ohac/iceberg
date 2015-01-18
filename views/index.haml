@@ -8,7 +8,7 @@
         :content => 'Store and share files on Iceberg.'}
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
-    - cdn = SETTING['local']['cdn'] || ''
+    - cdn = Iceberg::SETTING['local']['cdn'] || ''
     %link{:href => "#{cdn}/css/bootstrap.min.css", :rel => "stylesheet"}
     %link{:href => "#{cdn}/css/bootstrap-theme.min.css", :rel => "stylesheet"}
     %link{:href => "/starter-template.css", :rel => "stylesheet"}
@@ -69,7 +69,7 @@
                   %p You can share pictures, recordings, videos – anything.
                   %p You can quickly share URL to view, download, and collaborate on all the files you want - no email attachment needed.
                   %p
-                    - demourl = SETTING['local']['demourl'] || '#'
+                    - demourl = Iceberg::SETTING['local']['demourl'] || '#'
                     %a{:class => "btn btn-lg btn-primary", :href => demourl} Demo
             %div{:class => "item"}
               %img{:src => "data:image/gif;base64,R0lGODlhAQABAIAAAGZmZgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", :alt => "Second slide"}
@@ -215,7 +215,7 @@
                     :id => tripcode}= tripcode
         %hr
         %h1 Recent Peers
-        - salt = SETTING['local']['salt'] || ''
+        - salt = Iceberg::SETTING['local']['salt'] || ''
         - recentpeers.each do |digest, info|
           %p #{digest} (#{info})
         %hr
