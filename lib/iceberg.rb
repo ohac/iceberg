@@ -43,22 +43,31 @@ module Iceberg
   IBDB_RECENT_PEERS = 'iceberg:recentpeers'
   IBDB_PEERS = 'iceberg:peers'
 
+  ALGORITHM = 'AES-128-CBC'
+  REDIS = if ENV['DB_PORT_6379_TCP_PORT']
+      host = ENV['DB_PORT_6379_TCP_ADDR']
+      port = ENV['DB_PORT_6379_TCP_PORT'].to_i
+      Redis.new(:host => host, :port => port)
+    else
+      Redis.new
+    end
+
   def self.uploadimpl2(filemax, encdigest)
-    n = @@redis.lpush(IBDB_RECENT, encdigest)
-    tripcodelist = @@redis.smembers(IBDB_TRIPCODE_SET) || []
+    n = REDIS.lpush(IBDB_RECENT, encdigest)
+    tripcodelist = REDIS.smembers(IBDB_TRIPCODE_SET) || []
     while n.size > filemax
-      n = @@redis.llen(IBDB_RECENT)
-      dropdigest = @@redis.rpop(IBDB_RECENT)
+      n = REDIS.llen(IBDB_RECENT)
+      dropdigest = REDIS.rpop(IBDB_RECENT)
       b = Iceberg::Storage.new
       dropfile = b.getobject(dropdigest)
       dropsize = dropfile.content_length / (1024 * 1024) # MiB
       dropsize = 1 if dropsize <= 0 # TODO handle under 1 MiB
       found = false
       tripcodelist.each do |tripcode|
-        next unless @@redis.sismember(IBDB_TRIPCODE + tripcode, dropdigest)
-        v = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
+        next unless REDIS.sismember(IBDB_TRIPCODE + tripcode, dropdigest)
+        v = REDIS.get(IBDB_TRIPCODE_FUND + tripcode)
         if v.to_i > 0
-          @@redis.decrby(IBDB_TRIPCODE_FUND + tripcode, dropsize)
+          REDIS.decrby(IBDB_TRIPCODE_FUND + tripcode, dropsize)
           found = true
           break
         end
@@ -68,7 +77,7 @@ module Iceberg
         dropfile.delete if dropfile.content_length > 64 * 1024 # 64 KiB
         break
       end
-      @@redis.lpush(IBDB_RECENT, dropdigest)
+      REDIS.lpush(IBDB_RECENT, dropdigest)
     end
   end
 
@@ -83,7 +92,7 @@ module Iceberg
     end
     digest = Digest::SHA1.digest(alldata)
     hexdigest = digest.unpack('H*')[0]
-    cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).encrypt
+    cipher = OpenSSL::Cipher::Cipher.new(ALGORITHM).encrypt
     cipher.key = digest[0, 16]
     cipher.iv = digest[4, 16]
     encdata = cipher.update(alldata) + cipher.final
@@ -99,14 +108,14 @@ module Iceberg
     if tripkey
       tripcode = Base64.encode64(Digest::SHA1.digest(tripkey))[0, 12]
       tripcode = tripcode.tr('/', '.')
-      @@redis.sadd(IBDB_TRIPCODE_SET, tripcode)
-      @@redis.sadd(IBDB_TRIPCODE + tripcode, encdigest)
+      REDIS.sadd(IBDB_TRIPCODE_SET, tripcode)
+      REDIS.sadd(IBDB_TRIPCODE + tripcode, encdigest)
       # TODO test (initial bonus)
-      v = @@redis.get(IBDB_TRIPCODE_FUND + tripcode)
+      v = REDIS.get(IBDB_TRIPCODE_FUND + tripcode)
       if v
-        @@redis.incrby(IBDB_TRIPCODE_FUND + tripcode, 1)
+        REDIS.incrby(IBDB_TRIPCODE_FUND + tripcode, 1)
       else
-        @@redis.set(IBDB_TRIPCODE_FUND + tripcode, 2)
+        REDIS.set(IBDB_TRIPCODE_FUND + tripcode, 2)
       end
     end
     {
@@ -146,7 +155,7 @@ module Iceberg
     end
     if hexdigest
       digest = [hexdigest].pack('H*')
-      cipher = OpenSSL::Cipher::Cipher.new(@@algorithm).decrypt
+      cipher = OpenSSL::Cipher::Cipher.new(ALGORITHM).decrypt
       cipher.key = digest[0, 16]
       cipher.iv = digest[4, 16]
     end
@@ -161,14 +170,14 @@ module Iceberg
   end
 
   def self.recordip(ip)
-    info = JSON.parse(@@redis.hget(IBDB_PEERS, ip2digest(ip)) || '{}')
+    info = JSON.parse(REDIS.hget(IBDB_PEERS, ip2digest(ip)) || '{}')
     info['download'] ||= 0
     info['download'] += 1
-    @@redis.hset(IBDB_PEERS, ip2digest(ip), info.to_json)
-    @@redis.lrem(IBDB_RECENT_PEERS, 1, ip)
-    @@redis.lpush(IBDB_RECENT_PEERS, ip)
-    if @@redis.llen(IBDB_RECENT_PEERS) > 10 # TODO
-      @@redis.rpop(IBDB_RECENT_PEERS)
+    REDIS.hset(IBDB_PEERS, ip2digest(ip), info.to_json)
+    REDIS.lrem(IBDB_RECENT_PEERS, 1, ip)
+    REDIS.lpush(IBDB_RECENT_PEERS, ip)
+    if REDIS.llen(IBDB_RECENT_PEERS) > 10 # TODO
+      REDIS.rpop(IBDB_RECENT_PEERS)
     end
   end
 

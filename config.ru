@@ -1,4 +1,4 @@
 require File.dirname( __FILE__ ) + '/bin/icebergd'
 
-set :protection, :except => :frame_options
-run Sinatra::Application
+Iceberg::WebApp.set :protection, :except => :frame_options
+run Iceberg::WebApp
