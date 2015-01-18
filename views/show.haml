@@ -74,7 +74,8 @@
               %img{:src => dllink}
               %hr
             - when /\.mp3$/, /\.ogg$/, /\.flac$/, /\.m4a$/
-              %audio{:src => dllink, :controls => :controls}
+              %audio{:controls => :controls}
+                %source{:src => dllink, :type => 'audio/mpeg'}
               %hr
           %a{:href => dllink, :class => 'btn btn-default btn-lg'}
             %span{:class => 'glyphicon glyphicon-cloud-download'} Download
