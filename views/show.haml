@@ -22,7 +22,7 @@
             %meta{:name => 'twitter:image', :content => "#{hostport}#{dllink}"}
             %meta{:name => 'twitter:url', :content => request.url}
             - summary = false
-        - when /\.m4a$/
+        - when /\.mp3$/, /\.m4a$/
           %meta{:property => 'twitter:card', :content => 'player'}
           %meta{:name => 'twitter:player', :content => "#{hostport}#{ctlink}"}
           %meta{:name => 'twitter:player:width', :content => 300}
