@@ -188,30 +188,86 @@ p x
               "#{disp}; filename=\"#{filename}\""
         end
         range = request.env['HTTP_RANGE']
+        skip = 0
+        size = nil
         if range
           range = range.split('=')[1].split('-').map(&:to_i)
+          size = range[1]
+          if size
+            skip = range[0]
+            size = size + 1 - skip
+            status 206
+          end
         end
-        out = ''
-        #stream do |out| # TODO
+        if size && size < 4 * 1024 * 1024 # TODO under 4 MiB
+          out = ''
           begin
             file.read do |data|
               data = cipher.update(data) if cipher
               out << data
-              #sleep 0.1 # TODO
             end
-            out << cipher.final if cipher
+            if cipher
+              data = cipher.final
+              out << data
+            end
           rescue => x
 p x
           end
           Iceberg.recordip(request.ip)
-        #end
-        if range
-          range[1] = out.size - 1 unless range[1]
-          status 206
           response.headers['Content-Range'] = "bytes #{range.join('-')}/#{out.size}"
-          out[range[0], range[1] - range[0] + 1]
+          out[skip, size]
         else
-          out
+          stream do |out|
+            begin
+              file.read do |data|
+                data = cipher.update(data) if cipher
+                if skip <= 0
+                  if size
+                    if size > 0
+                      out << data[0, size]
+                      size -= data.size
+                    end
+                  else
+                    out << data
+                  end
+                else
+                  if skip >= data.size
+                    skip -= data.size
+                  else
+                    if size
+                      out << data[skip, size]
+                      size -= data.size - skip
+                    else
+                      out << data[(skip)..-1]
+                    end
+                    skip = 0
+                  end
+                end
+                sleep 0.1 # TODO
+              end
+              if cipher
+                data = cipher.final
+                if skip <= 0
+                  if size
+                    if size > 0
+                      out << data[0, size]
+                    end
+                  else
+                    out << data
+                  end
+                else
+                  if size
+                    out << data[skip, size]
+                  else
+                    out << data[(skip)..-1]
+                  end
+                end
+              end
+            rescue => x
+p x
+            end
+            Iceberg.recordip(request.ip)
+          end
         end
       end
     end
