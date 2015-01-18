@@ -6,15 +6,15 @@ class Iceberg
   class Storage
 
     def initialize
-      bucket = SETTING['local']['s3bucket']
-      if bucket
+      @bucketname = SETTING['local']['s3bucket']
+      if @bucketname
         s3 = AWS::S3.new
-        @bucket = s3.buckets[bucket]
+        @bucket = s3.buckets[@bucketname]
       end
     end
 
     def getobject(name)
-      if @bucket
+      if @bucketname
         @bucket.objects['iceberg/' + name]
       else
         FileObject.new(name)
@@ -22,9 +22,22 @@ class Iceberg
     end
 
     def dir
-      if @use_s3
+      if @bucketname
+        s3 = AWS::S3.new
+        s3.buckets
       else
-        Dir.new(SETTING['local']['download'])
+        path = SETTING['local']['download']
+        File.directory?(path) ? Dir.new(SETTING['local']['download']) : []
+      end
+    end
+
+    def create
+      if @bucketname
+        s3 = AWS::S3.new
+        @bucket = s3.buckets.create(@bucketname)
+      else
+        path = SETTING['local']['download']
+        FileUtils.mkdir_p(path)
       end
     end
 

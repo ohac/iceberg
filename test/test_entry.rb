@@ -2,6 +2,8 @@ require 'iceberg'
 
 b = Iceberg::Storage.new
 b.dir
+b.create
+b.dir
 o = b.getobject('testfile')
 o.key
 o.exists?
