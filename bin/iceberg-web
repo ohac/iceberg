@@ -1,0 +1,8 @@
+#!/usr/bin/ruby
+require 'iceberg'
+
+module Iceberg
+  class WebApp
+    run!
+  end
+end

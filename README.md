@@ -23,7 +23,9 @@ Or install it yourself as:
 ## Usage
 
     Server
-    $ rackup -s thin -p 4567
+    $ bundle exec rackup -s thin -p 4567
+    or
+    $ bundle exec bin/iceberg-web
 
     Client
     $ echo a > a

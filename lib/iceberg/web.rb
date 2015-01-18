@@ -1,14 +1,5 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
-self_file =
-  if File.symlink?(__FILE__)
-    require 'pathname'
-    Pathname.new(__FILE__).realpath
-  else
-    __FILE__
-  end
-$:.unshift(File.dirname(self_file) + "/../lib")
-
 require 'iceberg'
 require 'haml'
 require 'sinatra/base'
@@ -21,7 +12,8 @@ module Iceberg
 
   class WebApp < Sinatra::Base
 
-    ICEBERG_HOME = File.dirname(__FILE__) + '/../'
+    ICEBERG_HOME = File.dirname(__FILE__) + '/../../'
+    set :protection, :except => :frame_options
     set :public_folder, ICEBERG_HOME + 'public'
     set :views, ICEBERG_HOME + 'views'
 
@@ -216,8 +208,6 @@ p x
       haml :tripcode, :locals => { :tripcode => tripcode, :files => files,
           :fund => fund }
     end
-
-    run! if __FILE__ == $0
 
   end
 
