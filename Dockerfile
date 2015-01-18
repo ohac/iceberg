@@ -9,6 +9,7 @@ RUN gem install sinatra
 RUN gem install haml
 RUN apt-get install -y make ruby-dev g++
 RUN gem install aws-sdk thin
+RUN gem install bundler rake
 RUN git clone https://github.com/ohac/iceberg.git
 RUN \
   mkdir -p /iceberg/public/css && \
@@ -24,7 +25,7 @@ RUN \
   curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/fonts/glyphicons-halflings-regular.ttf
 EXPOSE 4567
 WORKDIR /iceberg
-CMD rackup -p 4567 -o 0.0.0.0
+CMD bundle exec rackup -p 4567 -o 0.0.0.0
 
 # Build:
 # docker build -t ohac/iceberg .
