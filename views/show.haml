@@ -7,6 +7,7 @@
   -# hostport = request.scheme + '://' + request.host
   - hostport = 'https://' + request.host
   - params = hexdigest ? "?digest=#{hexdigest}&filename=#{filename}" : ''
+  - name += ".#{filename}" if filename
   - url = "#{name}#{params}"
   - dllink = "/download/#{url}"
   - ctlink = "/container/#{url}"
