@@ -95,7 +95,7 @@ module Iceberg
         rv[:name] = origname
         session[:uploaded] = rv
       rescue => x
-    p x
+p x
       end
       redirect '/'
     end
@@ -165,12 +165,15 @@ p x
     get '/container/:name' do
       name = params[:name]
       hexdigest = params[:digest]
-      haml :container, :locals => { :name => name, :hexdigest => hexdigest }
+      filename = params[:filename]
+      haml :container, :locals => { :name => name, :hexdigest => hexdigest,
+          :filename => filename }
     end
 
     ['/download/:name', '/api/v1/download/:name'].each do |path|
       get path do
         name = params[:name]
+        name = name.split('.')[0] if name.index('.')
         filename = params[:filename]
         hexdigest = params[:digest]
         ctype, disp, file, cipher = Iceberg.download(name, filename, hexdigest)
@@ -184,18 +187,31 @@ p x
           response.headers['Content-Disposition'] =
               "#{disp}; filename=\"#{filename}\""
         end
-        stream do |out|
+        range = request.env['HTTP_RANGE']
+        if range
+          range = range.split('=')[1].split('-').map(&:to_i)
+        end
+        out = ''
+        #stream do |out| # TODO
           begin
             file.read do |data|
               data = cipher.update(data) if cipher
               out << data
-              sleep 0.1 # TODO
+              #sleep 0.1 # TODO
             end
             out << cipher.final if cipher
           rescue => x
 p x
           end
           Iceberg.recordip(request.ip)
+        #end
+        if range
+          range[1] = out.size - 1 unless range[1]
+          status 206
+          response.headers['Content-Range'] = "bytes #{range.join('-')}/#{out.size}"
+          out[range[0], range[1] - range[0] + 1]
+        else
+          out
         end
       end
     end

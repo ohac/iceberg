@@ -1,7 +1,9 @@
 !!! 5
 %html
   %body
+    %br
     - params = "?digest=#{hexdigest}"
+    - name += ".#{filename}" if filename
     - url = "#{name}#{params}"
     - dllink = "/download/#{url}"
     %audio{:controls => :controls}
