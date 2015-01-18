@@ -22,7 +22,7 @@
             %meta{:name => 'twitter:image', :content => "#{hostport}#{dllink}"}
             %meta{:name => 'twitter:url', :content => request.url}
             - summary = false
-        - when /\.mp3$/
+        - when /\.m4a$/
           %meta{:property => 'twitter:card', :content => 'player'}
           %meta{:name => 'twitter:player', :content => "#{hostport}#{ctlink}"}
           %meta{:name => 'twitter:player:width', :content => 300}
@@ -73,7 +73,7 @@
             - when /\.jpg$/, /\.gif$/, /\.png$/
               %img{:src => dllink}
               %hr
-            - when /\.mp3$/, /\.ogg$/, /\.flac$/
+            - when /\.mp3$/, /\.ogg$/, /\.flac$/, /\.m4a$/
               %audio{:src => dllink, :controls => :controls}
               %hr
           %a{:href => dllink, :class => 'btn btn-default btn-lg'}

@@ -1,8 +1,9 @@
+!!! 5
 %html
   %body
     - params = "?digest=#{hexdigest}"
     - url = "#{name}#{params}"
     - dllink = "/download/#{url}"
     %audio{:controls => :controls}
-      %source{:src => dllink, :type => 'audio/mp3'}
+      %source{:src => dllink, :type => 'audio/mpeg'}
       Your browser does not support audio
