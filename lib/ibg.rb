@@ -143,7 +143,7 @@ module Iceberg
   end
 
   def self.download(name, filename, hexdigest)
-    ctype, disp = case filename
+    ctype, disp = case filename.downcase
       when /\.jpg$/ ; ['image/jpeg', 'inline']
       when /\.png$/ ; ['image/png', 'inline']
       when /\.gif$/ ; ['image/gif', 'inline']

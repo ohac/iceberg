@@ -1,4 +1,5 @@
 !!! 5
+- title = Time.now.strftime('%Y-%m-%d %H:%M ')
 %html
   %head
     %title Online Storage - Iceberg
@@ -157,7 +158,6 @@
               %br
               %label STEP 1
               %br
-              - title = Time.now.strftime('%Y-%m-%d %H:%M ')
               %input{:type => 'input', :name => 'title', :value => title,
                   :class => 'form-control'}
               %br
@@ -224,16 +224,38 @@
         %br
         It is important to backup keys.
         %br
-        %textarea#metadata{:class => 'form-control', :rows => 10}
-        %br
-        %button#showkeys{:type => 'button', :class => 'btn btn-lg btn-default'}
-          %span{:class => 'glyphicon glyphicon-open',
-              'aria-hidden' => true}
-          Show Keys
-        %button#apply{:type => 'button', :class => 'btn btn-lg btn-default'}
-          %span{:class => 'glyphicon glyphicon-save',
-              'aria-hidden' => true}
-          Import Keys
+        %form{:action => '/uploadtext', :method => 'post',
+            :enctype => 'multipart/form-data'}
+          %textarea#metadata{:class => 'form-control', :rows => 10,
+              :name => 'text'}
+          %br
+          %button#showkeys{:type => 'button', :class => 'btn btn-lg btn-default'}
+            %span{:class => 'glyphicon glyphicon-open',
+                'aria-hidden' => true}
+            Show Keys
+          %button#apply{:type => 'button', :class => 'btn btn-lg btn-default'}
+            %span{:class => 'glyphicon glyphicon-save',
+                'aria-hidden' => true}
+            Import Keys
+          %input{:type => :hidden, :name => 'title', :value => "#{title}Keys",
+              :class => 'form-control'}
+          %button{:type => 'submit',
+              :class => 'btn btn-lg btn-default'}
+            %span{:class => 'glyphicon glyphicon-cloud-upload',
+                'aria-hidden' => true}
+            Upload
+          %br
+          %br
+          %label Tripcode Tag (Option)
+          %br
+          %div{:class => 'input-group'}
+            %span{:class => 'input-group-addon', :id => 'basic-addon2'}
+              %span{:class => 'glyphicon glyphicon-tag',
+                'aria-hidden' => true}
+              \#
+            %input{:type => :text, :class => 'form-control',
+                :placeholder => 'Trip Key',
+                'aria-describedby' => 'basic-addon2', :name => 'tripkey'}
         %br
         %br
         %button#deleteall{:type => 'button',
