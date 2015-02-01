@@ -7,6 +7,8 @@
   -# hostport = request.scheme + '://' + request.host
   - hostport = 'https://' + request.host
   - params = hexdigest ? "?digest=#{hexdigest}&filename=#{filename}" : ''
+  - url1 = "#{name}#{params}"
+  - dllink1 = "/download/#{url1}"
   - name += ".#{filename}" if filename
   - url = "#{name}#{params}"
   - dllink = "/download/#{url}"
@@ -65,7 +67,7 @@
         - if exists
           - case filename
             - when /\.txt$/
-              %iframe{:src => dllink}
+              %iframe{:src => dllink, :width => 1024, :height => 360}
               %hr
             - when /\.webm$/
               %video{:width => 640, :height => 360, :controls => :controls}
@@ -85,11 +87,11 @@
         %hr
         %label Share URL:
         %textarea{:rows => 2, :class => 'form-control'}
-          #{hostport}/show/#{url}
+          #{hostport}/show/#{url1}
         %br
         %label Direct URL:
         %textarea{:rows => 2, :class => 'form-control'}
-          #{hostport}#{dllink}
+          #{hostport}#{dllink1}
     %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
     %script{:type => 'text/javascript', :src => "#{cdn}/js/bootstrap.min.js"}
     %script{:type => 'text/javascript', :src => '/show.js'}
