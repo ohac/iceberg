@@ -18,7 +18,7 @@
     - if exists
       %meta{:name => 'twitter:title', :content => filename}
       - summary = true
-      - case filename
+      - case filename.downcase
         - when /\.jpg$/, /\.gif$/, /\.png$/
           - if filesize < 1024 * 1024
             %meta{:property => 'twitter:card', :content => 'photo'}
@@ -65,9 +65,9 @@
           %input#digest{:type => :hidden, :value => hexdigest}
           %input#encdigest{:type => :hidden, :value => encdigest}
         - if exists
-          - case filename
+          - case filename.downcase
             - when /\.txt$/
-              %iframe{:src => dllink, :width => 1024, :height => 360}
+              %iframe#textdata{:src => dllink, :width => 1024, :height => 360}
               %hr
             - when /\.webm$/
               %video{:width => 640, :height => 360, :controls => :controls}
@@ -82,6 +82,11 @@
               %hr
           %a{:href => dllink, :class => 'btn btn-default btn-lg'}
             %span{:class => 'glyphicon glyphicon-cloud-download'} Download
+          - if /_Keys\.txt$/ === filename
+            %button#apply{:type => 'button', :class => 'btn btn-lg btn-default'}
+              %span{:class => 'glyphicon glyphicon-save',
+                  'aria-hidden' => true}
+              Import Keys
         - else
           %p File not found
         %hr
