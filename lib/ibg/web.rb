@@ -162,6 +162,25 @@ p x
           :exists => o.exists?}
     end
 
+    post '/shorten' do
+      name = params[:name]
+      filename = params[:filename]
+      hexdigest = params[:digest]
+      seconds = params[:seconds]
+      params = hexdigest ? "?digest=#{hexdigest}&filename=#{filename}" : ''
+      url = "/show/#{name}#{params}"
+      key = Iceberg.url2key(url, seconds)
+      haml :shorten, :locals => {:key => key}
+    end
+
+    get '/s/:key' do
+      key = params[:key]
+      url = Iceberg.key2url(key)
+      redirect url if url
+      sleep 1 # TODO bruteforce attack
+      raise
+    end
+
     get '/container/:name' do
       name = params[:name]
       hexdigest = params[:digest]

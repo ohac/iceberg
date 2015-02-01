@@ -9,8 +9,8 @@
   - params = hexdigest ? "?digest=#{hexdigest}&filename=#{filename}" : ''
   - url1 = "#{name}#{params}"
   - dllink1 = "/download/#{url1}"
-  - name += ".#{filename}" if filename
-  - url = "#{name}#{params}"
+  - name2 = filename ? name + ".#{filename}" : name
+  - url = "#{name2}#{params}"
   - dllink = "/download/#{url}"
   - ctlink = "/container/#{url}"
   %head
@@ -80,13 +80,23 @@
               %audio{:controls => :controls}
                 %source{:src => dllink, :type => 'audio/mpeg'}
               %hr
-          %a{:href => dllink, :class => 'btn btn-default btn-lg'}
-            %span{:class => 'glyphicon glyphicon-cloud-download'} Download
-          - if /_Keys\.txt$/ === filename
-            %button#apply{:type => 'button', :class => 'btn btn-lg btn-default'}
-              %span{:class => 'glyphicon glyphicon-save',
+          %form{:action => '/shorten', :method => 'post'}
+            %a{:href => dllink, :class => 'btn btn-default btn-lg'}
+              %span{:class => 'glyphicon glyphicon-cloud-download'} Download
+            %input{:type => :hidden, :name => :name, :value => name}
+            %input{:type => :hidden, :name => :filename, :value => filename}
+            %input{:type => :hidden, :name => :digest, :value => hexdigest}
+            %input{:type => :hidden, :name => :seconds, :value => 60}= # TODO
+            %button{:type => :submit, :class => 'btn btn-lg btn-default'}
+              %span{:class => 'glyphicon glyphicon-share',
                   'aria-hidden' => true}
-              Import Keys
+              Shorten URL (60 seconds)
+            - if /_Keys\.txt$/ === filename
+              %button#apply{:type => 'button',
+                  :class => 'btn btn-lg btn-default'}
+                %span{:class => 'glyphicon glyphicon-save',
+                    'aria-hidden' => true}
+                Import Keys
         - else
           %p File not found
         %hr

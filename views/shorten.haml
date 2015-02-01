@@ -1,0 +1,35 @@
+!!! 5
+%html
+  %head
+    %title #{key} - Online Storage - Iceberg
+    %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
+        :media => "screen"}
+    - cdn = Iceberg::SETTING['local']['cdn'] || ''
+    %link{:href => "#{cdn}/css/bootstrap.min.css", :rel => "stylesheet"}
+    %link{:href => "#{cdn}/css/bootstrap-theme.min.css", :rel => "stylesheet"}
+    %link{:href => "/starter-template.css", :rel => "stylesheet"}
+  %body
+    %nav{:class => "navbar navbar-inverse navbar-fixed-top"}
+      %div.container
+        %div.navbar-header
+          %button{:type => "button", :class => "navbar-toggle collapsed",
+              "data-toggle" => "collapse", "data-target" => "#navbar",
+              "aria-expanded" => "false", "aria-controls" => "navbar"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "/"} Online Storage - Iceberg
+        %div#navbar{:class => "collapse navbar-collapse"}
+          %ul{:class => "nav navbar-nav"}= partial :navbar
+    %div.container
+      %div.starter-template
+        - hostport = 'https://' + request.host
+        - shortlink = "/s/#{key}"
+        - url = "#{hostport}#{shortlink}"
+        %div{:class => 'input-group input-group-lg'}
+          %input{:type => :text, :class => 'form-control', :value => url}
+          %span{:class => "input-group-btn"}
+            %a{:href => shortlink, :class => 'btn btn-default'} Go!
+    %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
+    %script{:type => 'text/javascript', :src => "#{cdn}/js/bootstrap.min.js"}

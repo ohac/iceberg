@@ -43,6 +43,7 @@ module Iceberg
   IBDB_TRIPCODE_FUND = 'iceberg:tripcode:fund:'
   IBDB_RECENT_PEERS = 'iceberg:recentpeers'
   IBDB_PEERS = 'iceberg:peers'
+  IBDB_SHORT_URL = 'iceberg:shorturl:'
 
   ALGORITHM = 'AES-128-CBC'
   REDIS = if ENV['DB_PORT_6379_TCP_PORT']
@@ -182,6 +183,21 @@ module Iceberg
     if REDIS.llen(IBDB_RECENT_PEERS) > 10 # TODO
       REDIS.rpop(IBDB_RECENT_PEERS)
     end
+  end
+
+  def self.url2key(url, seconds)
+    key = "%010d" % rand(10000000000)
+    dbkey = IBDB_SHORT_URL + key
+    unless REDIS.exists(dbkey) # TODO retry
+      REDIS.set(dbkey, url)
+      REDIS.expire(dbkey, seconds)
+      key
+    end
+  end
+
+  def self.key2url(key)
+    dbkey = IBDB_SHORT_URL + key
+    REDIS.get(dbkey)
   end
 
 end
