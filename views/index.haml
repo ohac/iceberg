@@ -106,7 +106,7 @@
             %span{:class => "glyphicon glyphicon-chevron-right", 'aria-hidden' => true}
             %span{:class => "sr-only"} Next
 
-        %h1 Upload
+        %h1= t 'upload'
         %ul#uploadtabs{:class => 'nav nav-tabs'}
           %li.active{:role => 'presentation'}
             %a{:href => '#filetab', 'aria-controls' => 'filetab', :role => :tab,
@@ -138,7 +138,7 @@
                   :class => 'btn btn-lg btn-default'}
                 %span{:class => 'glyphicon glyphicon-cloud-upload',
                     'aria-hidden' => true}
-                Upload
+                = t 'upload'
               %br
               %br
               %label Tripcode Tag (Option)
@@ -170,7 +170,7 @@
                   :class => 'btn btn-lg btn-default'}
                 %span{:class => 'glyphicon glyphicon-cloud-upload',
                     'aria-hidden' => true}
-                Upload
+                = t 'upload'
               %br
               %br
               %label Tripcode Tag (Option)
@@ -243,7 +243,7 @@
               :class => 'btn btn-lg btn-default'}
             %span{:class => 'glyphicon glyphicon-cloud-upload',
                 'aria-hidden' => true}
-            Upload
+            = t 'upload'
           %br
           %br
           %label Tripcode Tag (Option)

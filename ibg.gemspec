@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'haml'
   spec.add_dependency 'redis'
   spec.add_dependency 'aws-sdk'
+  spec.add_dependency 'i18n'
 end

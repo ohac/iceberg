@@ -6,6 +6,8 @@ require 'nkf'
 require 'fileutils'
 require 'base64'
 require 'json'
+require 'i18n'
+require 'i18n/backend/fallbacks'
 
 module Iceberg
 
@@ -21,6 +23,13 @@ module Iceberg
     enable :sessions
     enable :logging
 
+    configure do
+      I18n::Backend::Simple.send(:include, I18n::Backend::Fallbacks)
+      locales = Dir[File.join(ICEBERG_HOME, 'locales', '*.yml')]
+      I18n.load_path = locales
+      I18n.backend.load_translations
+    end
+
     helpers do
 
       include Rack::Utils; alias_method :h, :escape_html
@@ -28,6 +37,10 @@ module Iceberg
         options = options.merge({:layout => false})
         template = "_#{template.to_s}".to_sym
         haml(template, options)
+      end
+
+      def t(text)
+        I18n.t(text)
       end
 
     end
@@ -48,9 +61,12 @@ module Iceberg
       end
       content_type CONTENT_TYPES[request_uri], :charset => 'utf-8'
       response.headers['Cache-Control'] = 'no-cache'
+      I18n.locale = session[:locale] || 'ja'
     end
 
     get '/' do
+      locale = params[:locale]
+      session[:locale] = locale if locale
       filemax = SETTING['local']['filemax']
       recentfiles = REDIS.lrange(IBDB_RECENT, 0, filemax)
       tripcodelist = REDIS.smembers(IBDB_TRIPCODE_SET)
