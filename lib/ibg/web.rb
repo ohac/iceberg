@@ -19,6 +19,7 @@ module Iceberg
     FORBIDDEN_CHARS = " #<>:\\/*?\"|&',;`"
 
     enable :sessions
+    enable :logging
 
     helpers do
 
