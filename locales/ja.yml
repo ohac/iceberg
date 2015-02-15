@@ -1,2 +1,40 @@
 ja:
+  online_storage: オンラインストレージ - Iceberg
+  home: ホーム
+  source: ソースコード
+  roadmap: ロードマップ
   upload: アップロード
+  download: ダウンロード
+  recent_peers: 最近のピア
+  cryptographic_keys: 暗号化鍵
+  cryptographic_keys_note1: すべての鍵はあなたのブラウザに保存されています。
+  cryptographic_keys_note2: 鍵をバックアップしておくことをおすすめします。
+  file: ファイル
+  text: テキスト
+  step1: ステップ1
+  step2: ステップ2
+  tripcode_tag: トリップタグ(オプション)
+  tripcode: 'トリップ:'
+  up_to_size: '最大 %s MiBまで'
+  trip_key: トリップ鍵
+  files: ファイル
+  tags: タグ
+  show_keys: 鍵を見る
+  import_keys: 鍵を取り込む
+  forget_all_keys: すべての鍵を削除
+  files_in_fifo: '%s / %s ファイルがFIFOに存在'
+  carousel11: 'すべてのファイルをどこからでも'
+  carousel12: '写真、音楽、動画など、何でも保管しておけます。'
+  carousel13: 'メール添付不要。アドレス共有で閲覧やダウンロードが可能に。'
+  demo: サンプルファイル
+  carousel21: '安全で安心'
+  carousel22: '通信経路はSSLで暗号化。ファイルはAmazon S3に冗長保存。'
+  carousel23: "ファイルは共有なしで保存され、後で選択できます。"
+  carousel24: 'AES暗号化鍵はサーバには保存しません。'
+  carousel25: "ブラウザの内部ストレージに保存されます。"
+  carousel31: 'オープンソース'
+  carousel32: 'Icebergはオープンソースソフトウェアです。'
+  carousel33: '誰でもこのソフトを改良することができ、どこでも動かせます。'
+  carousel41: '分散システム'
+  carousel42: '暗号化ファイルはAPIでダウンロード・アップロードが可能です。'
+  carousel43: '誰でもファイルの冗長化に参加することができます。'

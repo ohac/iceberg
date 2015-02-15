@@ -2,7 +2,7 @@
 - title = Time.now.strftime('%Y-%m-%d %H:%M ')
 %html
   %head
-    %title Online Storage - Iceberg
+    %title= t 'online_storage'
     %meta{:property => 'twitter:card', :content => 'summary'}
     %meta{:name => 'twitter:title', :content => 'Online Storage - Iceberg'}
     %meta{:name => 'twitter:description',
@@ -25,7 +25,7 @@
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %a.navbar-brand{:href => "#"} Online Storage - Iceberg
+          %a.navbar-brand{:href => "#"}= t 'online_storage'
         %div#navbar{:class => "collapse navbar-collapse"}
           %ul{:class => "nav navbar-nav"}= partial :navbar
     %div.container
@@ -51,7 +51,7 @@
               = name
             - if tripcode
               %br
-              Tripcode:
+              = t 'tripcode'
               %a{:href => "/tripcode/#{tripcode}"}= tripcode
               %input#tripcode{:type => :hidden, :value => tripcode}
 
@@ -66,37 +66,37 @@
               %img{:src => "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", :alt => "First slide"}
               %div{:class => "container"}
                 %div{:class => "carousel-caption"}
-                  %h1 Your stuff, anywhere
-                  %p You can share pictures, recordings, videos – anything.
-                  %p You can quickly share URL to view, download, and collaborate on all the files you want - no email attachment needed.
+                  %h1= t 'carousel11'
+                  %p= t 'carousel12'
+                  %p= t 'carousel13'
                   %p
                     - demourl = Iceberg::SETTING['local']['demourl'] || '#'
-                    %a{:class => "btn btn-lg btn-primary", :href => demourl} Demo
+                    %a{:class => "btn btn-lg btn-primary", :href => demourl}= t 'demo'
             %div{:class => "item"}
               %img{:src => "data:image/gif;base64,R0lGODlhAQABAIAAAGZmZgAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", :alt => "Second slide"}
               %div{:class => "container"}
                 %div{:class => "carousel-caption"}
-                  %h1 Safe and secure
-                  %p Full SSL communication. Use Amazon S3.
-                  %p Everything's automatically private, so you control who sees what.
-                  %p Server does not store your AES encryption key.
-                  %p Storing it into your browser's local storage.
+                  %h1= t 'carousel21'
+                  %p= t 'carousel22'
+                  %p= t 'carousel23'
+                  %p= t 'carousel24'
+                  %p= t 'carousel25'
             %div{:class => "item"}
               %img{:src => "data:image/gif;base64,R0lGODlhAQABAIAAAFVVVQAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", :alt => "Third slide"}
               %div{:class => "container"}
                 %div{:class => "carousel-caption"}
-                  %h1 Open source
-                  %p Iceberg is open source software.
-                  %p You can improve this software. Run anywhere.
+                  %h1= t 'carousel31'
+                  %p= t 'carousel32'
+                  %p= t 'carousel33'
                   %p
                     %a{:class => "btn btn-lg btn-primary", :href => 'https://github.com/ohac/iceberg'} GitHub
             %div{:class => "item"}
               %img{:src => "data:image/gif;base64,R0lGODlhAQABAIAAAFVVVQAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", :alt => "slide 4"}
               %div{:class => "container"}
                 %div{:class => "carousel-caption"}
-                  %h1 Decentralized
-                  %p It is possible to download and upload encrypted files via API.
-                  %p Anybody can duplicate and re-upload files.
+                  %h1= t 'carousel41'
+                  %p= t 'carousel42'
+                  %p= t 'carousel43'
                   %p
                     %a{:class => "btn btn-lg btn-primary", :href => 'https://github.com/ohac/iceberg'} GitHub
           %a{:class => "left carousel-control", :href => "#myCarousel", :role => "button", 'data-slide' => "prev"}
@@ -113,26 +113,26 @@
                 'data-toggle' => 'tab'}
               %span{:class => 'glyphicon glyphicon-paperclip',
                 'aria-hidden' => true}
-              File
+              = t 'file'
           %li{:role => 'presentation'}
             %a{:href => '#texttab', 'aria-controls' => 'texttab', :role => :tab,
                 'data-toggle' => 'tab'}
               %span{:class => 'glyphicon glyphicon-pencil',
                 'aria-hidden' => true}
-              Text
+              = t 'text'
         %div{:class => 'tab-content'}
           %div#filetab{:role => :tabpanel, :class => 'tab-pane active'}
 
             %form{:action => '/upload', :method => 'post',
                 :enctype => 'multipart/form-data'}
               %br
-              %label STEP 1
+              %label= t 'step1'
               %br
               %input{:type => 'file', :name => 'file'}
-              Up to #{maxfilesize / (1024 * 1024)} MiB.
+              = (t 'up_to_size') % (maxfilesize / (1024 * 1024))
               %br
               %br
-              %label STEP 2
+              %label= t 'step2'
               %br
               %button{:type => 'submit',
                   :class => 'btn btn-lg btn-default'}
@@ -141,7 +141,7 @@
                 = t 'upload'
               %br
               %br
-              %label Tripcode Tag (Option)
+              %label= t 'tripcode_tag'
               %br
               %div{:class => 'input-group'}
                 %span{:class => 'input-group-addon', :id => 'basic-addon1'}
@@ -149,14 +149,14 @@
                     'aria-hidden' => true}
                   \#
                 %input{:type => :text, :class => 'form-control',
-                    :placeholder => 'Trip Key',
+                    :placeholder => (t 'trip_key'),
                     'aria-describedby' => 'basic-addon1', :name => 'tripkey'}
 
           %div#texttab{:role => :tabpanel, :class => 'tab-pane'}
             %form{:action => '/uploadtext', :method => 'post',
                 :enctype => 'multipart/form-data'}
               %br
-              %label STEP 1
+              %label= t 'step1'
               %br
               %input{:type => 'input', :name => 'title', :value => title,
                   :class => 'form-control'}
@@ -164,7 +164,7 @@
               %textarea{:rows => 10, :cols => 40, :name => 'text',
                   :class => 'form-control'}
               %br
-              %label STEP 2
+              %label= t 'step2'
               %br
               %button{:type => 'submit',
                   :class => 'btn btn-lg btn-default'}
@@ -173,7 +173,7 @@
                 = t 'upload'
               %br
               %br
-              %label Tripcode Tag (Option)
+              %label= t 'tripcode_tag'
               %br
               %div{:class => 'input-group'}
                 %span{:class => 'input-group-addon', :id => 'basic-addon2'}
@@ -181,24 +181,24 @@
                     'aria-hidden' => true}
                   \#
                 %input{:type => :text, :class => 'form-control',
-                    :placeholder => 'Trip Key',
+                    :placeholder => (t 'trip_key'),
                     'aria-describedby' => 'basic-addon2', :name => 'tripkey'}
 
         %hr
-        %h1 Download
+        %h1= t 'download'
         %ul#downloadtabs{:class => 'nav nav-tabs'}
           %li.active{:role => 'presentation'}
             %a{:href => '#dltab', 'aria-controls' => 'dltab', :role => :tab,
                 'data-toggle' => 'tab'}
               %span{:class => 'glyphicon glyphicon-file',
                 'aria-hidden' => true}
-              Files
+              = t 'files'
           %li{:role => 'presentation'}
             %a{:href => '#tagtab', 'aria-controls' => 'tagtab', :role => :tab,
                 'data-toggle' => 'tab'}
               %span{:class => 'glyphicon glyphicon-tags',
                 'aria-hidden' => true}
-              Tags
+              = t 'tags'
         %br
         %div{:class => 'tab-content'}
           %div#dltab{:role => :tabpanel, :class => 'tab-pane active'}
@@ -207,22 +207,22 @@
               %div
                 %a.files{:href => "/show/#{file}", :id => file}= filename
             %br
-            #{recentfiles.size} / #{filemax} files in FIFO.
+            = (t 'files_in_fifo') % [recentfiles.size, filemax]
           %div#tagtab{:role => :tabpanel, :class => 'tab-pane'}
             - tripcodelist.each do |tripcode|
               %div
                 %a.tripcodelist{:href => "/tripcode/#{tripcode}",
                     :id => tripcode}= tripcode
         %hr
-        %h1 Recent Peers
+        %h1= t 'recent_peers'
         - salt = Iceberg::SETTING['local']['salt'] || ''
         - recentpeers.each do |digest, info|
           %p #{digest} (#{info})
         %hr
-        %h1 Cryptographic Keys
-        All keys are stored on your browser's storage.
+        %h1= t 'cryptographic_keys'
+        = t 'cryptographic_keys_note1'
         %br
-        It is important to backup keys.
+        = t 'cryptographic_keys_note2'
         %br
         %form{:action => '/uploadtext', :method => 'post',
             :enctype => 'multipart/form-data'}
@@ -232,11 +232,11 @@
           %button#showkeys{:type => 'button', :class => 'btn btn-lg btn-default'}
             %span{:class => 'glyphicon glyphicon-open',
                 'aria-hidden' => true}
-            Show Keys
+            = t 'show_keys'
           %button#apply{:type => 'button', :class => 'btn btn-lg btn-default'}
             %span{:class => 'glyphicon glyphicon-save',
                 'aria-hidden' => true}
-            Import Keys
+            = t 'import_keys'
           %input{:type => :hidden, :name => 'title', :value => "#{title}Keys",
               :class => 'form-control'}
           %button{:type => 'submit',
@@ -246,7 +246,7 @@
             = t 'upload'
           %br
           %br
-          %label Tripcode Tag (Option)
+          %label= t 'tripcode_tag'
           %br
           %div{:class => 'input-group'}
             %span{:class => 'input-group-addon', :id => 'basic-addon2'}
@@ -254,14 +254,14 @@
                 'aria-hidden' => true}
               \#
             %input{:type => :text, :class => 'form-control',
-                :placeholder => 'Trip Key',
+                :placeholder => (t 'trip_key'),
                 'aria-describedby' => 'basic-addon2', :name => 'tripkey'}
         %br
         %br
         %button#deleteall{:type => 'button',
             :class => 'btn btn-sm btn-default'}
           %span{:class => 'glyphicon glyphicon-trash', 'aria-hidden' => true}
-          Forget All Keys
+          = t 'forget_all_keys'
     %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
     %script{:type => 'text/javascript', :src => "#{cdn}/js/bootstrap.min.js"}
     %script{:type => 'text/javascript', :src => '/bootstrap-filestyle.min.js'}

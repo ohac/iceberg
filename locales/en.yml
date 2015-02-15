@@ -1,2 +1,40 @@
 en:
+  online_storage: Oneline Storage - Iceberg
+  home: Home
+  source: Source
+  roadmap: Roadmap
   upload: Upload
+  download: Download
+  recent_peers: Recent Peers
+  cryptographic_keys: Cryptographic Keys
+  cryptographic_keys_note1: "All keys are stored on your browser's storage."
+  cryptographic_keys_note2: "It is important to backup keys."
+  file: File
+  text: Text
+  step1: STEP 1
+  step2: STEP 2
+  tripcode_tag: Tripcode Tag (Option)aaa
+  tripcode: 'Tripcode:'
+  up_to_size: 'Up to %s MiB.'
+  trip_key: Trip Key
+  files: Files
+  tags: Tags
+  show_keys: Show Keys
+  import_keys: Import Keys
+  forget_all_keys: Forget All Keys
+  files_in_fifo: '%s / %s files in FIFO.'
+  carousel11: 'Your stuff, anywhere'
+  carousel12: 'You can share pictures, recordings, videos – anything.'
+  carousel13: 'You can quickly share URL to view, download, and collaborate on all the files you want - no email attachment needed.'
+  demo: Demo
+  carousel21: 'Safe and secure'
+  carousel22: 'Full SSL communication. Use Amazon S3.'
+  carousel23: "Everything's automatically private, so you control who sees what."
+  carousel24: 'Server does not store your AES encryption key.'
+  carousel25: "Storing it into your browser's local storage."
+  carousel31: 'Open source'
+  carousel32: 'Iceberg is open source software.'
+  carousel33: 'You can improve this software. Run anywhere.'
+  carousel41: 'Decentralized'
+  carousel42: 'It is possible to download and upload encrypted files via API.'
+  carousel43: 'Anybody can duplicate and re-upload files.'

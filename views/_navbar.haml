@@ -1,9 +1,9 @@
 %li.active
-  %a{:href => "#"} Home
+  %a{:href => "#"}= t 'home'
 %li
   - demourl = Iceberg::SETTING['local']['demourl'] || '#'
-  %a{:href => demourl} Demo
+  %a{:href => demourl}= t 'demo'
 %li
-  %a{:href => 'https://github.com/ohac/iceberg'} Source
+  %a{:href => 'https://github.com/ohac/iceberg'}= t 'source'
 %li
-  %a{:href => 'https://github.com/ohac/iceberg/wiki'} Roadmap
+  %a{:href => 'https://github.com/ohac/iceberg/wiki'}= t 'roadmap'
