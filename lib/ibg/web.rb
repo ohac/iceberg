@@ -66,7 +66,10 @@ module Iceberg
 
     get '/' do
       locale = params[:locale]
-      session[:locale] = locale if locale
+      if locale
+        I18n.locale = locale
+        session[:locale] = locale
+      end
       filemax = SETTING['local']['filemax']
       recentfiles = REDIS.lrange(IBDB_RECENT, 0, filemax)
       tripcodelist = REDIS.smembers(IBDB_TRIPCODE_SET)
