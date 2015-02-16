@@ -7,3 +7,12 @@
   %a{:href => 'https://github.com/ohac/iceberg'}= t 'source'
 %li
   %a{:href => 'https://github.com/ohac/iceberg/wiki'}= t 'roadmap'
+%li{:class => 'dropdown'}
+  %a{:href => '#', :class => 'dropdown-toggle', 'data-toggle' => 'dropdown', :role => 'button', 'aria-expanded' => false}
+    Locale
+    %span{:class => 'caret'}
+  %ul{:class => 'dropdown-menu', :role => 'menu', 'aria-labelledby' => 'dropdownMenu1'}
+    %li{:role => 'presentation'}
+      %a{:role => 'menuitem', :tabindex => -1, :href => '/?locale=en'} English
+    %li{:role => 'presentation'}
+      %a{:role => 'menuitem', :tabindex => -1, :href => '/?locale=ja'} 日本語
