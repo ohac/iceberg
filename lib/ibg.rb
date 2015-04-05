@@ -37,6 +37,10 @@ module Iceberg
 
   SETTING = YAML.load(File.read(SETTING_FILE))
 
+  unless File.exist?(SETTING['local']['download'])
+    FileUtils.mkdir SETTING['local']['download']
+  end
+
   IBDB_RECENT = 'iceberg:recent'
   IBDB_TRIPCODE = 'iceberg:tripcode:'
   IBDB_TRIPCODE_SET = 'iceberg:tripcode:set'
