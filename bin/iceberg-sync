@@ -16,14 +16,14 @@ class MultiReader
     @readers << reader
   end
 
-  def read(size = nil)
+  def read(size = nil, outbuf = '')
     rv = ''
     loop do
       reader = @readers[@cur]
       break unless reader
-      s = reader.read(size) # TODO S3
+      s = reader.read(size, outbuf) # TODO S3
       if s
-        rv += s
+        rv << s
         if size
           size -= s.size
           break if size <= 0
@@ -32,6 +32,8 @@ class MultiReader
         @cur += 1
       end
     end
+    outbuf.clear
+    outbuf << rv
     rv.size > 0 ? rv : nil
   end
 

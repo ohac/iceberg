@@ -65,7 +65,7 @@ module Iceberg
     end
 
     # TODO S3 bin/icebergsync.rb
-    def read(size = nil)
+    def read(size = nil, outbuf = '')
       if block_given?
         close
         File.open(@path, 'rb') do |fd|
@@ -77,7 +77,7 @@ module Iceberg
         end
       else
         @fd = File.open(@path, 'rb') unless @fd
-        @fd.read(size)
+        @fd.read(size, outbuf)
       end
     end
 
