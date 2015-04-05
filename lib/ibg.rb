@@ -144,7 +144,7 @@ module Iceberg
   end
 
   def self.download(name, filename, hexdigest)
-    ctype, disp = case filename.downcase
+    ctype, disp = case filename ? filename.downcase : nil
       when /\.jpg$/ ; ['image/jpeg', 'inline']
       when /\.png$/ ; ['image/png', 'inline']
       when /\.gif$/ ; ['image/gif', 'inline']
