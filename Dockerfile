@@ -10,6 +10,7 @@ RUN gem install haml
 RUN apt-get install -y make ruby-dev g++
 RUN gem install aws-sdk thin
 RUN gem install bundler rake
+RUN gem install i18n
 RUN git clone https://github.com/ohac/iceberg.git
 RUN \
   mkdir -p /iceberg/public/css && \
