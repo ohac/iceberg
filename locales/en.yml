@@ -13,7 +13,7 @@ en:
   text: Text
   step1: STEP 1
   step2: STEP 2
-  tripcode_tag: Tripcode Tag (Option)aaa
+  tripcode_tag: Tripcode Tag (Option)
   tripcode: 'Tripcode:'
   generate: 'Generate'
   up_to_size: 'Up to %s MiB.'
