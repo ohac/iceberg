@@ -73,3 +73,6 @@ Or install it yourself as:
 * seedrandom.js
   * The MIT License (MIT)
   * Copyright 2015 David Bau.
+* Crypto-js
+  * New BSD License
+  * (c) 2009-2013 by Jeff Mott. All rights reserved.

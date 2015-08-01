@@ -107,4 +107,18 @@ $(function(){
     e.preventDefault()
     $(this).tab('show')
   });
+
+  $('.uploadtext').click(function(){
+    var data = $(this).parent().find('textarea').val();
+    var rawdata = CryptoJS.enc.Utf8.parse(data);
+    var hash = CryptoJS.SHA1(rawdata).toString();
+    var key = CryptoJS.enc.Hex.parse(hash.substring(0, 32));
+    var iv = CryptoJS.enc.Hex.parse(hash.substring(8));
+    var encrypted = CryptoJS.AES.encrypt(rawdata, key, { iv: iv });
+    // TODO
+    // alert(CryptoJS.enc.Base64.parse(encrypted.toString()));
+    // var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
+    // alert(decrypted.toString(CryptoJS.enc.Utf8));
+  });
+
 });

@@ -11,6 +11,7 @@
         :media => "screen"}
     - cdn = Iceberg::SETTING['local']['cdn'] || ''
     - cdn2 = Iceberg::SETTING['local']['cdn2'] || '/js'
+    - cdn3 = Iceberg::SETTING['local']['cdn3'] || '/js'
     %link{:href => "#{cdn}/css/bootstrap.min.css", :rel => "stylesheet"}
     %link{:href => "#{cdn}/css/bootstrap-theme.min.css", :rel => "stylesheet"}
     %link{:href => "/starter-template.css", :rel => "stylesheet"}
@@ -120,7 +121,7 @@
               %label= t 'step2'
               %br
               %button{:type => 'submit',
-                  :class => 'btn btn-lg btn-default'}
+                  :class => 'btn btn-lg btn-default uploadtext'}
                 %span{:class => 'glyphicon glyphicon-cloud-upload',
                     'aria-hidden' => true}
                 = t 'upload'
@@ -195,7 +196,7 @@
           %input{:type => :hidden, :name => 'title', :value => "#{title}Keys",
               :class => 'form-control'}
           %button{:type => 'submit',
-              :class => 'btn btn-lg btn-default'}
+              :class => 'btn btn-lg btn-default uploadtext'}
             %span{:class => 'glyphicon glyphicon-cloud-upload',
                 'aria-hidden' => true}
             = t 'upload'
@@ -222,5 +223,8 @@
     %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
     %script{:type => 'text/javascript', :src => "#{cdn}/js/bootstrap.min.js"}
     %script{:type => 'text/javascript', :src => '/bootstrap-filestyle.min.js'}
-    %script{:type => 'text/javascript', :src => '/index.js'}
     %script{:type => 'text/javascript', :src => "#{cdn2}/seedrandom.min.js"}
+    %script{:type => 'text/javascript', :src => "#{cdn3}/components/core-min.js"}
+    %script{:type => 'text/javascript', :src => "#{cdn3}/rollups/sha1.js"}
+    %script{:type => 'text/javascript', :src => "#{cdn3}/rollups/aes.js"}
+    %script{:type => 'text/javascript', :src => '/index.js'}
