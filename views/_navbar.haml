@@ -1,5 +1,3 @@
-%li.active
-  %a{:href => "#"}= t 'home'
 %li
   - demourl = Iceberg::SETTING['local']['demourl'] || '#'
   %a{:href => demourl}= t 'demo'
