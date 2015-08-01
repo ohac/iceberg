@@ -2,9 +2,11 @@ FROM ubuntu:14.04.1
 
 RUN apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y wget curl vim redis-tools git ruby make ruby-dev g++ && \
+    apt-get install -y wget curl vim redis-tools git ruby make ruby-dev g++ \
+    zlib1g-dev && \
     apt-get clean
-RUN gem install redis sinatra haml slim aws-sdk thin bundler rake i18n
+RUN gem install redis sinatra haml slim thin bundler rake i18n && \
+    gem install aws-sdk -v '~>1'
 RUN git clone https://github.com/ohac/iceberg.git
 RUN \
   mkdir -p /iceberg/public/css && \
