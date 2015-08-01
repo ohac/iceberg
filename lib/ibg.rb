@@ -89,6 +89,23 @@ module Iceberg
     end
   end
 
+  def self.gettripcode(tripkey)
+    tripcode = Base64.encode64(Digest::SHA1.digest(tripkey))[0, 12]
+    tripcode.tr('/', '.')
+  end
+
+  def self.addtotripcode(tripcode, encdigest)
+    REDIS.sadd(IBDB_TRIPCODE_SET, tripcode)
+    REDIS.sadd(IBDB_TRIPCODE + tripcode, encdigest)
+    # TODO test (initial bonus)
+    v = REDIS.get(IBDB_TRIPCODE_FUND + tripcode)
+    if v
+      REDIS.incrby(IBDB_TRIPCODE_FUND + tripcode, 1)
+    else
+      REDIS.set(IBDB_TRIPCODE_FUND + tripcode, 2)
+    end
+  end
+
   def self.upload(path, tripkey, filesize, filemax, text = nil)
     tripkey = nil if tripkey.empty?
     if path
@@ -114,17 +131,8 @@ module Iceberg
       uploadimpl2(filemax, encdigest)
     end
     if tripkey
-      tripcode = Base64.encode64(Digest::SHA1.digest(tripkey))[0, 12]
-      tripcode = tripcode.tr('/', '.')
-      REDIS.sadd(IBDB_TRIPCODE_SET, tripcode)
-      REDIS.sadd(IBDB_TRIPCODE + tripcode, encdigest)
-      # TODO test (initial bonus)
-      v = REDIS.get(IBDB_TRIPCODE_FUND + tripcode)
-      if v
-        REDIS.incrby(IBDB_TRIPCODE_FUND + tripcode, 1)
-      else
-        REDIS.set(IBDB_TRIPCODE_FUND + tripcode, 2)
-      end
+      tripcode = gettripcode(tripkey)
+      addtotripcode(tripcode, encdigest)
     end
     {
       :digest => hexdigest,
@@ -147,6 +155,21 @@ module Iceberg
       uploadimpl2(filemax, encdigest)
     end
     {
+    }
+  end
+
+  def self.uploadencdata(encdata, filesize, filemax)
+    raise 'size over' if encdata.size > filesize
+    encdigest = Digest::SHA1.hexdigest(encdata)
+    b = Iceberg::Storage.new
+    dest = b.getobject(encdigest)
+    unless dest.exists?
+      dest.write(encdata)
+      dest.close rescue nil # TODO
+      uploadimpl2(filemax, encdigest)
+    end
+    {
+      :encdigest => encdigest
     }
   end
 

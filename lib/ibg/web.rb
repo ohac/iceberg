@@ -49,6 +49,7 @@ module Iceberg
         :html => 'text/html',
         :css => 'text/css',
         :js => 'application/javascript',
+        :json => 'application/json',
         :txt => 'text/plain',
         }
 
@@ -56,6 +57,7 @@ module Iceberg
       request_uri = case request.env['REQUEST_URI'].split('?')[0]
         when /\.css$/ ; :css
         when /\.js$/ ; :js
+        when /\.json$/ ; :json
         when /\.txt$/ ; :txt
         else :html
       end
@@ -73,8 +75,14 @@ module Iceberg
       filemax = SETTING['local']['filemax']
       recentfiles = REDIS.lrange(IBDB_RECENT, 0, filemax)
       tripcodelist = REDIS.smembers(IBDB_TRIPCODE_SET)
-      uploaded = session[:uploaded]
+      uploaded = session[:uploaded] || params[:uploaded]
       session[:uploaded] = nil
+      if String === uploaded
+        uploaded = JSON.parse(uploaded)
+        uploaded.keys.each do |key|
+          uploaded[key.to_sym] = uploaded[key]
+        end
+      end
       maxfilesize = SETTING['local']['maxfilesize']
       recentpeers = REDIS.lrange(IBDB_RECENT_PEERS, 0, 10).map do |peer|
         digest = Iceberg.ip2digest(peer)
@@ -138,16 +146,27 @@ p x
     post '/api/v1/uploadraw' do
       begin
         f = params[:file]
-        raise if f.nil?
-        path = f[:tempfile].path
-        origname = f[:filename] # TODO check SHA-1
         filemax = SETTING['local']['filemax']
         maxfilesize = SETTING['local']['maxfilesize']
-        rv = Iceberg.uploadraw(path, maxfilesize, filemax)
+        if f.nil?
+          params = JSON.parse(request.body.read)
+          origname = params['filename']
+          encdata = Base64.decode64(params['file'])
+          rv = Iceberg.uploadencdata(encdata, maxfilesize, filemax)
+          tripkey = params['tripkey']
+          tripcode = Iceberg.gettripcode(tripkey)
+          Iceberg.addtotripcode(tripcode, rv[:encdigest])
+          rv[:tripcode] = tripcode
+        else
+          path = f[:tempfile].path
+          origname = f[:filename] # TODO check SHA-1
+          rv = Iceberg.uploadraw(path, maxfilesize, filemax)
+        end
       rescue => x
         rv = { :error => x.to_s }
       end
-      content_type CONTENT_TYPES[:js], :charset => 'utf-8'
+      content_type CONTENT_TYPES[:json], :charset => 'utf-8'
+      rv[:origname] = origname
       rv.to_json + "\n"
     end
 

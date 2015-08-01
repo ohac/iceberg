@@ -110,13 +110,36 @@ $(function(){
 
   $('.uploadtext').click(function(){
     var data = $(this).parent().find('textarea').val();
+    var origname = $(this).parent().find('input:first').val() + '.txt';
+    var tripkey = $(this).parent().find('.tripin').val();
     var rawdata = CryptoJS.enc.Utf8.parse(data);
     var hash = CryptoJS.SHA1(rawdata).toString();
     var key = CryptoJS.enc.Hex.parse(hash.substring(0, 32));
     var iv = CryptoJS.enc.Hex.parse(hash.substring(8));
     var encrypted = CryptoJS.AES.encrypt(rawdata, key, { iv: iv });
+    var str = encrypted.ciphertext.toString(CryptoJS.enc.Base64);
+    $.ajax({
+      type: 'post',
+      url: '/api/v1/uploadraw',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({filename: origname, file: str, tripkey: tripkey}),
+      success: function(json) {
+        var origname = json['origname'];
+        var digest = json['encdigest'];
+        var tripcode = json['tripcode'];
+        var uploaded = JSON.stringify({
+          digest: hash,
+          encdigest: digest,
+          tripcode: tripcode,
+          tripkey: tripkey,
+          name: origname
+        });
+        window.location.href = '/?uploaded=' + encodeURIComponent(uploaded);
+      }
+    });
+    return false;
     // TODO
-    // alert(CryptoJS.enc.Base64.parse(encrypted.toString()));
     // var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
     // alert(decrypted.toString(CryptoJS.enc.Utf8));
   });
