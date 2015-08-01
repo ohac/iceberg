@@ -129,6 +129,7 @@ module Iceberg
       :digest => hexdigest,
       :encdigest => encdigest,
       :tripcode => tripcode,
+      :tripkey => tripkey,
     }
   end
 

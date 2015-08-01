@@ -16,13 +16,18 @@ $(function(){
     $('.tripin').val(tripcode);
   });
 
+  var lasttripkey = localStorage.getItem('lasttripkey');
+  $('.tripin').val(lasttripkey);
+
   var encdigest = $('#encdigest').val();
   if (encdigest) {
     var name = $('#name').val();
     var digest = $('#digest').val();
     var tripcode = $('#tripcode').val();
+    var tripkey = $('#tripkey').val();
     localStorage.setItem(encdigest + ':name', name);
     localStorage.setItem(encdigest + ':digest', digest);
+    localStorage.setItem('lasttripkey', tripkey);
     if (tripcode) {
       var list = localStorage.getItem('tripcodelist');
       if (list) {

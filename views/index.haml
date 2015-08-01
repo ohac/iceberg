@@ -35,9 +35,11 @@
           - digest = uploaded[:digest]
           - encdigest = uploaded[:encdigest]
           - tripcode = uploaded[:tripcode]
+          - tripkey = uploaded[:tripkey]
           %input#name{:type => :hidden, :value => name}
           %input#digest{:type => :hidden, :value => digest}
           %input#encdigest{:type => :hidden, :value => encdigest}
+          %input#tripkey{:type => :hidden, :value => tripkey}
           - success = true # TODO
           - alerttype = success ? 'alert-success' : 'alert-danger'
           %div{:class => "alert #{alerttype} alert-dismissible",
