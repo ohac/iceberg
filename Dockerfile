@@ -21,6 +21,7 @@ RUN \
   curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css && \
   cd /iceberg/public/js && \
   curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js && \
+  curl -sO https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.min.js && \
   cd /iceberg/public/fonts && \
   curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/fonts/glyphicons-halflings-regular.woff && \
   curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/fonts/glyphicons-halflings-regular.ttf

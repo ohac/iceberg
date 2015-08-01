@@ -10,6 +10,7 @@
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
     - cdn = Iceberg::SETTING['local']['cdn'] || ''
+    - cdn2 = Iceberg::SETTING['local']['cdn2'] || ''
     %link{:href => "#{cdn}/css/bootstrap.min.css", :rel => "stylesheet"}
     %link{:href => "#{cdn}/css/bootstrap-theme.min.css", :rel => "stylesheet"}
     %link{:href => "/starter-template.css", :rel => "stylesheet"}
@@ -148,9 +149,11 @@
                   %span{:class => 'glyphicon glyphicon-tag',
                     'aria-hidden' => true}
                   \#
-                %input{:type => :text, :class => 'form-control',
+                %input{:type => :text, :class => 'form-control tripin',
                     :placeholder => (t 'trip_key'),
                     'aria-describedby' => 'basic-addon1', :name => 'tripkey'}
+                %span{:class => 'input-group-btn autogen'}
+                  %button{:class => "btn btn-default", :type => "button"}= t 'generate'
 
           %div#texttab{:role => :tabpanel, :class => 'tab-pane'}
             %form{:action => '/uploadtext', :method => 'post',
@@ -180,9 +183,11 @@
                   %span{:class => 'glyphicon glyphicon-tag',
                     'aria-hidden' => true}
                   \#
-                %input{:type => :text, :class => 'form-control',
+                %input{:type => :text, :class => 'form-control tripin',
                     :placeholder => (t 'trip_key'),
                     'aria-describedby' => 'basic-addon2', :name => 'tripkey'}
+                %span{:class => 'input-group-btn autogen'}
+                  %button{:class => "btn btn-default", :type => "button"}= t 'generate'
 
         %hr
         %h1= t 'download'
@@ -253,9 +258,11 @@
               %span{:class => 'glyphicon glyphicon-tag',
                 'aria-hidden' => true}
               \#
-            %input{:type => :text, :class => 'form-control',
+            %input{:type => :text, :class => 'form-control tripin',
                 :placeholder => (t 'trip_key'),
                 'aria-describedby' => 'basic-addon2', :name => 'tripkey'}
+            %span{:class => 'input-group-btn autogen'}
+              %button{:class => "btn btn-default", :type => "button"}= t 'generate'
         %br
         %br
         %button#deleteall{:type => 'button',
@@ -266,3 +273,4 @@
     %script{:type => 'text/javascript', :src => "#{cdn}/js/bootstrap.min.js"}
     %script{:type => 'text/javascript', :src => '/bootstrap-filestyle.min.js'}
     %script{:type => 'text/javascript', :src => '/index.js'}
+    %script{:type => 'text/javascript', :src => "#{cdn2}/seedrandom/2.4.2/seedrandom.min.js"}

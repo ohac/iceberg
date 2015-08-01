@@ -27,6 +27,7 @@ module Iceberg
               'digest=cafcc2df4c3998ba5ab94b5262ef3369502488f7&' +
               'filename=jBRA8.webm', # Big Buck Bunny
           'cdn' => 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1',
+          'cdn2' => 'https://cdnjs.cloudflare.com/ajax/libs',
           'salt' => rand.to_s,
           's3bucket' => false,
         },

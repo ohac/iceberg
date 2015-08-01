@@ -1,4 +1,21 @@
 $(function(){
+  Math.seedrandom();
+  function reseed(event, count) {
+    var t = [];
+    function w(e) {
+      t.push([e.pageX, e.pageY, +new Date]);
+      if (t.length < count) { return; }
+      document.removeEventListener(event, w);
+      Math.seedrandom(t, { entropy: true });
+    }
+    document.addEventListener(event, w);
+  }
+  reseed('mousemove', 100);
+  $('.autogen').click(function() {
+    var tripcode = Math.random();
+    $('.tripin').val(tripcode);
+  });
+
   var encdigest = $('#encdigest').val();
   if (encdigest) {
     var name = $('#name').val();

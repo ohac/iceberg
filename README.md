@@ -70,3 +70,6 @@ Or install it yourself as:
   * Copyright (c) 2011-2014 Twitter, Inc
 * Bootstrap FileStyle
   * The MIT License (MIT)
+* seedrandom.js
+  * The MIT License (MIT)
+  * Copyright 2015 David Bau.

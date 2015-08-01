@@ -15,6 +15,7 @@ en:
   step2: STEP 2
   tripcode_tag: Tripcode Tag (Option)aaa
   tripcode: 'Tripcode:'
+  generate: 'Generate'
   up_to_size: 'Up to %s MiB.'
   trip_key: Trip Key
   files: Files

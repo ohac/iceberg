@@ -15,6 +15,7 @@ ja:
   step2: ステップ2
   tripcode_tag: トリップタグ(オプション)
   tripcode: 'トリップ:'
+  generate: '生成'
   up_to_size: '最大 %s MiBまで'
   trip_key: トリップ鍵
   files: ファイル
