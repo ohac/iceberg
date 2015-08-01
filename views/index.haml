@@ -10,7 +10,7 @@
     %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
         :media => "screen"}
     - cdn = Iceberg::SETTING['local']['cdn'] || ''
-    - cdn2 = Iceberg::SETTING['local']['cdn2'] || ''
+    - cdn2 = Iceberg::SETTING['local']['cdn2'] || '/js'
     %link{:href => "#{cdn}/css/bootstrap.min.css", :rel => "stylesheet"}
     %link{:href => "#{cdn}/css/bootstrap-theme.min.css", :rel => "stylesheet"}
     %link{:href => "/starter-template.css", :rel => "stylesheet"}
@@ -223,4 +223,4 @@
     %script{:type => 'text/javascript', :src => "#{cdn}/js/bootstrap.min.js"}
     %script{:type => 'text/javascript', :src => '/bootstrap-filestyle.min.js'}
     %script{:type => 'text/javascript', :src => '/index.js'}
-    %script{:type => 'text/javascript', :src => "#{cdn2}/seedrandom/2.4.2/seedrandom.min.js"}
+    %script{:type => 'text/javascript', :src => "#{cdn2}/seedrandom.min.js"}
