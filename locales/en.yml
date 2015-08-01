@@ -24,18 +24,4 @@ en:
   import_keys: Import Keys
   forget_all_keys: Forget All Keys
   files_in_fifo: '%s / %s files in FIFO.'
-  carousel11: 'Your stuff, anywhere'
-  carousel12: 'You can share pictures, recordings, videos – anything.'
-  carousel13: 'You can quickly share URL to view, download, and collaborate on all the files you want - no email attachment needed.'
   demo: Demo
-  carousel21: 'Safe and secure'
-  carousel22: 'Full SSL communication. Use Amazon S3.'
-  carousel23: "Everything's automatically private, so you control who sees what."
-  carousel24: 'Server does not store your AES encryption key.'
-  carousel25: "Storing it into your browser's local storage."
-  carousel31: 'Open source'
-  carousel32: 'Iceberg is open source software.'
-  carousel33: 'You can improve this software. Run anywhere.'
-  carousel41: 'Decentralized'
-  carousel42: 'It is possible to download and upload encrypted files via API.'
-  carousel43: 'Anybody can duplicate and re-upload files.'
