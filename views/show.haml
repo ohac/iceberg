@@ -77,6 +77,10 @@
               %hr
             - when /\.jpg$/, /\.gif$/, /\.png$/
               %img{:src => dllink}
+              %br
+              %br
+              %a{:href => "/showlocal/#{name}", :class => 'btn btn-default btn-lg'}
+                = t 'show_local'
               %hr
             - when /\.mp3$/, /\.ogg$/, /\.flac$/, /\.m4a$/
               %audio{:controls => :controls}
