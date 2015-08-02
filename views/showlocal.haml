@@ -29,7 +29,8 @@
         %h1 Encrypted File
         %input#encdigest{:type => :hidden, :value => encdigest}
         - if exists
-          %textarea#textdata{:style => "width: 1024px; height: 360px;"}
+          %textarea#textdata{:style => "width: 1024px; height: 360px; display: none;"}
+          %img#imageview{:style => 'display: none;'}
           %button#apply{:type => 'button',
               :class => 'btn btn-lg btn-default', :style => 'display: none;'}
             %span{:class => 'glyphicon glyphicon-save',

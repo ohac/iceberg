@@ -12,7 +12,6 @@ $(function(){
     dataType: 'binary',
     processData: false,
     success: function(encdata) {
-      var textdata = $('#textdata');
       var digest = localStorage.getItem(encdigest + ':digest');
       var key = CryptoJS.enc.Hex.parse(digest.substring(0, 32));
       var iv = CryptoJS.enc.Hex.parse(digest.substring(8));
@@ -24,7 +23,20 @@ $(function(){
         var wa = CryptoJS.lib.WordArray.create(u8a);
         var decrypted = CryptoJS.AES.decrypt(CryptoJS.enc.Base64.stringify(wa),
             key, { iv: iv });
-        textdata.val(decrypted.toString(CryptoJS.enc.Utf8));
+        if (name.match(/\.txt$/)) {
+          var textdata = $('#textdata');
+          textdata.show();
+          textdata.val(decrypted.toString(CryptoJS.enc.Utf8));
+        }
+        else {
+          var matchstr = name.match(/\.(jpg|gif|png)$/);
+          if (matchstr) {
+            var imageview = $('#imageview');
+            imageview.show();
+            imageview.attr('src', 'data:image/' + matchstr[1] + ';base64,' +
+                decrypted.toString(CryptoJS.enc.Base64));
+          }
+        }
       };
     }
   });
