@@ -121,6 +121,7 @@ $(function(){
   $('.uploadtext').click(function(){
     var data = $(this).parent().find('textarea').val();
     var origname = $(this).parent().find('input:first').val() + '.txt';
+    origname = origname.replace(/[ #<>:\\/*?"|&',;`]/g, '_')
     var tripkey = $(this).parent().find('.tripin').val();
     var rawdata = CryptoJS.enc.Utf8.parse(data);
     var hash = CryptoJS.SHA1(rawdata).toString();
