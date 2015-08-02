@@ -44,19 +44,20 @@ $(function(){
     var y = $(x);
     var id = y.attr('id');
     var digest = localStorage.getItem(id + ':digest');
-    if (digest) {
-      var name = localStorage.getItem(id + ':name');
-      var href = y.attr('href');
-      if (href.match(/^\/showlocal\//)) {
-        if (!name.match(/\.txt$/)) {
-          y.hide();
-        }
+    var name = localStorage.getItem(id + ':name');
+    var href = y.attr('href');
+    if (href.match(/^\/showlocal\//)) {
+      if (!digest || !name || !name.match(/\.txt$/)) {
+        y.hide();
       }
-      else {
-        href = href + '?digest=' + digest + '&filename=' + name;
-        y.attr('href', href);
-        y.html(name);
-      }
+    }
+    else if (digest) {
+      href = href + '?digest=' + digest + '&filename=' + name;
+      y.attr('href', href);
+      y.html(name);
+    }
+    else if (name) {
+      y.html(name + ' (No key)');
     }
     else {
       y.hide();
