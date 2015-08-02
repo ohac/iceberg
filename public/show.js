@@ -15,13 +15,16 @@ $(function(){
         var kv = x.split('=');
         var k = kv[0];
         var v = kv[1];
-        if (v) {
+        if (!!v) {
           if (v.length == 0) {
             localStorage.removeItem(k);
           }
           else {
             localStorage.setItem(k, v);
           }
+        }
+        else if (k) {
+          localStorage.removeItem(k);
         }
       });
     }

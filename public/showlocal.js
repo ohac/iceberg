@@ -25,4 +25,27 @@ $(function(){
       };
     }
   });
+
+  $('#apply').click(function () {
+    var textdata = $('#textdata');
+    if (textdata) {
+      var metadata = textdata.val();
+      $(metadata.split('\n')).each(function (i, x) {
+        var kv = x.split('=');
+        var k = kv[0];
+        var v = kv[1];
+        if (!!v) {
+          if (v.length == 0) {
+            localStorage.removeItem(k);
+          }
+          else {
+            localStorage.setItem(k, v);
+          }
+        }
+        else if (k) {
+          localStorage.removeItem(k);
+        }
+      });
+    }
+  });
 });

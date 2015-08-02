@@ -30,6 +30,11 @@
         %input#encdigest{:type => :hidden, :value => encdigest}
         - if exists
           %textarea#textdata{:style => "width: 1024px; height: 360px;"}
+          %button#apply{:type => 'button',
+              :class => 'btn btn-lg btn-default'}
+            %span{:class => 'glyphicon glyphicon-save',
+                'aria-hidden' => true}
+            = t 'import_keys'
         - else
           %p File not found
     %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
