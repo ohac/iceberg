@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 # -*- coding: utf-8 -*-
 require 'haml'
+require 'slim'
 require 'sinatra/base'
 require 'nkf'
 require 'fileutils'
@@ -346,6 +347,10 @@ p x
       fund = REDIS.get(IBDB_TRIPCODE_FUND + tripcode)
       haml :tripcode, :locals => { :tripcode => tripcode, :files => files,
           :fund => fund }
+    end
+
+    get '/farm' do
+      slim :farm
     end
 
   end

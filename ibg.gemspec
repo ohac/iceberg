@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'sinatra'
   spec.add_dependency 'thin'
   spec.add_dependency 'haml'
+  spec.add_dependency 'slim'
   spec.add_dependency 'redis'
   spec.add_dependency 'aws-sdk'
   spec.add_dependency 'i18n'
