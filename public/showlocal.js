@@ -21,8 +21,9 @@ $(function(){
         var arrayBuffer = ev.target.result;
         var u8a = new Uint8Array(arrayBuffer);
         var wa = CryptoJS.lib.WordArray.create(u8a);
-        var decrypted = CryptoJS.AES.decrypt(CryptoJS.enc.Base64.stringify(wa),
-            key, { iv: iv });
+        var b64 = CryptoJS.enc.Base64.stringify(wa);
+        if (b64.length > 512 * 1024) { return; }
+        var decrypted = CryptoJS.AES.decrypt(b64, key, { iv: iv });
         if (name.match(/\.txt$/)) {
           var textdata = $('#textdata');
           textdata.show();
@@ -34,6 +35,13 @@ $(function(){
             var imageview = $('#imageview');
             imageview.show();
             imageview.attr('src', 'data:image/' + matchstr[1] + ';base64,' +
+                decrypted.toString(CryptoJS.enc.Base64));
+          }
+          matchstr = name.match(/\.(mp3|ogg|flac|m4a)$/);
+          if (matchstr) {
+            var audioview = $('#audioview');
+            audioview.show();
+            audioview.attr('src', 'data:audio/mpeg;base64,' +
                 decrypted.toString(CryptoJS.enc.Base64));
           }
         }

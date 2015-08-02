@@ -71,7 +71,8 @@ $(function(){
     var name = localStorage.getItem(id + ':name');
     var href = y.attr('href');
     if (href.match(/^\/showlocal\//)) {
-      if (!digest || !name || !name.match(/\.(txt|jpg|gif|png)$/)) {
+      if (!digest || !name ||
+          !name.match(/\.(txt|jpg|gif|png|mp3|ogg|flac|m4a)$/)) {
         y.hide();
       }
     }
