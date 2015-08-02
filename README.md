@@ -76,3 +76,6 @@ Or install it yourself as:
 * Crypto-js
   * New BSD License
   * (c) 2009-2013 by Jeff Mott. All rights reserved.
+* jQuery BinaryTransport
+  * The MIT License (MIT)
+  * Copyright (c) 2014 Henry Algus

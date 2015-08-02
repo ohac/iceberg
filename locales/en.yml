@@ -5,6 +5,7 @@ en:
   roadmap: Roadmap
   upload: Upload
   download: Download
+  show_local: Decrypt the text locally (Beta)
   recent_peers: Recent Peers
   cryptographic_keys: Cryptographic Keys
   cryptographic_keys_note1: "All keys are stored on your browser's storage."

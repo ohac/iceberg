@@ -139,9 +139,6 @@ $(function(){
       }
     });
     return false;
-    // TODO
-    // var decrypted = CryptoJS.AES.decrypt(encrypted, key, { iv: iv });
-    // alert(decrypted.toString(CryptoJS.enc.Utf8));
   });
 
 });

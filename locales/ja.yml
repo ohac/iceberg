@@ -5,6 +5,7 @@ ja:
   roadmap: ロードマップ
   upload: アップロード
   download: ダウンロード
+  show_local: ローカルで復号化(ベータ版)
   recent_peers: 最近のピア
   cryptographic_keys: 暗号化鍵
   cryptographic_keys_note1: すべての鍵はあなたのブラウザに保存されています。

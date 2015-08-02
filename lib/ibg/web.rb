@@ -201,6 +201,16 @@ p x
           :exists => o.exists?}
     end
 
+    get '/showlocal/:name' do
+      name = params[:name]
+      b = Storage.new
+      o = b.getobject(name)
+      ex = o.exists?
+      size = ex ? o.content_length : nil
+      haml :showlocal, :locals => {:name => name, :filesize => size,
+          :exists => o.exists?}
+    end
+
     post '/shorten' do
       name = params[:name]
       filename = params[:filename]

@@ -1,0 +1,41 @@
+!!! 5
+%html
+  - encdigest = request.path_info.split('/').last
+  %head
+    %title #{t 'online_storage'}
+    %link{:href => "/style.css", :rel => "stylesheet", :type => "text/css",
+        :media => "screen"}
+    - cdn = Iceberg::SETTING['local']['cdn'] || ''
+    - cdn3 = Iceberg::SETTING['local']['cdn3'] || '/js'
+    %link{:href => "#{cdn}/css/bootstrap.min.css", :rel => "stylesheet"}
+    %link{:href => "#{cdn}/css/bootstrap-theme.min.css", :rel => "stylesheet"}
+    %link{:href => "/starter-template.css", :rel => "stylesheet"}
+  %body
+    %nav{:class => "navbar navbar-inverse navbar-fixed-top"}
+      %div.container
+        %div.navbar-header
+          %button{:type => "button", :class => "navbar-toggle collapsed",
+              "data-toggle" => "collapse", "data-target" => "#navbar",
+              "aria-expanded" => "false", "aria-controls" => "navbar"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => "/"}= t 'online_storage'
+        %div#navbar{:class => "collapse navbar-collapse"}
+          %ul{:class => "nav navbar-nav"}= partial :navbar
+    %div.container
+      %div.starter-template
+        %h1 Encrypted File
+        %input#encdigest{:type => :hidden, :value => encdigest}
+        - if exists
+          %textarea#textdata{:style => "width: 1024px; height: 360px;"}
+        - else
+          %p File not found
+    %script{:type => 'text/javascript', :src => '/jquery-2.1.3.min.js'}
+    %script{:type => 'text/javascript', :src => "#{cdn}/js/bootstrap.min.js"}
+    %script{:type => 'text/javascript', :src => "#{cdn3}/components/core-min.js"}
+    %script{:type => 'text/javascript', :src => "#{cdn3}/components/lib-typedarrays-min.js"}
+    %script{:type => 'text/javascript', :src => "#{cdn3}/rollups/aes.js"}
+    %script{:type => 'text/javascript', :src => '/js/jquery.binarytransport.js'}
+    %script{:type => 'text/javascript', :src => '/showlocal.js'}
