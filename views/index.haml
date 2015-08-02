@@ -59,6 +59,25 @@
               = t 'tripcode'
               %a{:href => "/tripcode/#{tripcode}"}= tripcode
               %input#tripcode{:type => :hidden, :value => tripcode}
+        - else
+          %input#name{:type => :hidden}
+          %input#digest{:type => :hidden}
+          %input#encdigest{:type => :hidden}
+          %input#tripkey{:type => :hidden}
+          %input#tripcode{:type => :hidden}
+          - alerttype = 'alert-success'
+          %div#uploaded{:class => "alert #{alerttype} alert-dismissible",
+              :role => 'alert', :style => 'display: none;'}
+            %button.close{:type => 'button', 'data-dismiss' => 'alert',
+                'aria-label' => 'Close'}
+              %span{'aria-hidden' => true} &times;
+            Uploaded
+            %br
+            %a#uploadedfile{:href => "/"} File
+            %a#uploadedshowlocal{:href => "/"}= "(" + (t 'show_local') + ")"
+            %br
+            = t 'tripcode'
+            %a#uploadedtrip{:href => "/"} Tripcode
 
         %h1= t 'upload'
         %ul#uploadtabs{:class => 'nav nav-tabs'}

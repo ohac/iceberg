@@ -16,6 +16,30 @@ $(function(){
     $('.tripin').val(tripcode);
   });
 
+  var uploaded = sessionStorage.getItem('uploaded');
+  sessionStorage.removeItem('uploaded');
+  if (uploaded) {
+    uploaded = JSON.parse(uploaded);
+    var encdigest = uploaded['encdigest'];
+    $('#encdigest').val(encdigest);
+    var name = uploaded['name'];
+    $('#name').val(name);
+    var digest = uploaded['digest'];
+    $('#digest').val(digest);
+    var tripcode = uploaded['tripcode'];
+    $('#tripcode').val(tripcode);
+    $('#tripkey').val(uploaded['tripkey']);
+    $('#uploaded').show();
+    var uploadedfile = $('#uploadedfile');
+    uploadedfile.text(name);
+    uploadedfile.attr('href',
+        '/show/' + encdigest + '?digest=' + digest+ '&filename=' + name);
+    $('#uploadedshowlocal').attr('href', '/showlocal/' + encdigest);
+    var uploadedtrip = $('#uploadedtrip');
+    uploadedtrip.text(tripcode);
+    uploadedtrip.attr('href', '/tripcode/' + tripcode);
+  }
+
   var lasttripkey = localStorage.getItem('lasttripkey');
   $('.tripin').val(lasttripkey);
 
@@ -147,7 +171,8 @@ $(function(){
           tripkey: tripkey,
           name: origname
         });
-        window.location.href = '/?uploaded=' + encodeURIComponent(uploaded);
+        sessionStorage.setItem('uploaded', uploaded);
+        window.location.href = '/';
       }
     });
     return false;
