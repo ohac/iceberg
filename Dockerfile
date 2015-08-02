@@ -19,10 +19,11 @@ RUN \
   curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js && \
   curl -sO https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.2/seedrandom.min.js && \
   curl -sO https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/core-min.js && \
+  curl -sO https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/components/lib-typedarrays-min.js && \
   curl -sO https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/sha1.js && \
   curl -sO https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js && \
   mkdir components rollups && \
-  mv core-min.js components/ && \
+  mv core-min.js lib-typedarrays-min.js components/ && \
   mv sha1.js aes.js rollups/ && \
   cd /iceberg/public/fonts && \
   curl -sO https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/fonts/glyphicons-halflings-regular.woff && \
