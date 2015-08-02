@@ -3,6 +3,9 @@ $(function(){
   var name = localStorage.getItem(encdigest + ':name');
   $('h1').text(name);
   document.title = name + ' - ' + document.title;
+  if (name.match(/_Keys\.txt$/)) {
+    $('#apply').show();
+  }
   $.ajax({
     type: 'get',
     url: '/api/v1/download/' + encdigest,
