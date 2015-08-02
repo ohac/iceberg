@@ -52,6 +52,8 @@
             %br
             %a{:href => "/show/#{encdigest}?digest=#{digest}&filename=#{name}"}
               = name
+            - if /\.txt$/ === name.downcase
+              %a{:href => "/showlocal/#{encdigest}"}= "(" + (t 'show_local') + ")"
             - if tripcode
               %br
               = t 'tripcode'
@@ -162,6 +164,7 @@
               - filename = "encrypted-#{file[0, 8]}"
               %div
                 %a.files{:href => "/show/#{file}", :id => file}= filename
+                %a.files{:href => "/showlocal/#{file}", :id => file}= "(" + (t 'show_local') + ")"
             %br
             = (t 'files_in_fifo') % [recentfiles.size, filemax]
           %div#tagtab{:role => :tabpanel, :class => 'tab-pane'}

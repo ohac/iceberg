@@ -45,9 +45,16 @@ $(function(){
     if (digest) {
       var name = localStorage.getItem(id + ':name');
       var href = y.attr('href');
-      href = href + '?digest=' + digest + '&filename=' + name;
-      y.attr('href', href);
-      y.html(name);
+      if (href.match(/^\/showlocal\//)) {
+        if (!name.match(/\.txt$/)) {
+          y.hide();
+        }
+      }
+      else {
+        href = href + '?digest=' + digest + '&filename=' + name;
+        y.attr('href', href);
+        y.html(name);
+      }
     }
   });
 });
